@@ -12,3 +12,8 @@ dist/
 
 # Playwright MCP session artifacts
 .playwright-mcp/
+
+# Claude Code
+.claude/
+CLAUDE.md
+**/CLAUDE.md
