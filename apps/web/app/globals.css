@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Backgrounds (Material 3 surfaces) ── */
+  --bg: #faf8ff;
+  --bg-surface: #ffffff;
+  --bg-raised: #f2f3ff;
+  --bg-overlay: #283044;
+  --bg-sunken: #e2e7ff;
+
+  /* ── Borders ── */
+  --border: #c7c4d8;
+  --border-subtle: #dae2fd;
+
+  /* ── Text ── */
+  --text-primary: #131b2e;
+  --text-secondary: #464555;
+  --text-muted: #777587;
+  --text-inverse: #ffffff;
+
+  /* ── Accent (Material 3 primary indigo) ── */
+  --accent: #3525cd;
+  --accent-hover: #4f46e5;
+  --accent-muted: #3525cd14;
+  --accent-fixed: #e2dfff;
+
+  /* ── Status ── */
+  --success: #0a7d4f;
+  --success-muted: #0a7d4f14;
+  --warning: #7e5a00;
+  --warning-muted: #7e5a0014;
+  --danger: #ba1a1a;
+  --danger-muted: #ba1a1a14;
+
+  /* ── Campaign status ── */
+  --status-draft: #777587;
+  --status-draft-bg: #77758714;
+  --status-draft-border: #77758740;
+
+  /* ── Shape ── */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  /* ── Elevation ── */
+  --shadow-sm: 0 1px 2px rgba(19, 27, 46, 0.06), 0 1px 3px rgba(19, 27, 46, 0.04);
+  --shadow: 0 4px 12px rgba(19, 27, 46, 0.08), 0 1px 4px rgba(19, 27, 46, 0.04);
+  --shadow-lg: 0 12px 32px rgba(19, 27, 46, 0.12);
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+code, pre, kbd {
+  font-family: 'DM Mono', 'Fira Code', monospace;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Puck editor theme: remap its azure accent to our Material-3 indigo ── */
+.puck-editor {
+  --puck-color-azure-01: #1c0e7a;
+  --puck-color-azure-02: #251488;
+  --puck-color-azure-03: #2d1aa6;
+  --puck-color-azure-04: #3525cd;
+  --puck-color-azure-05: #4f46e5;
+  --puck-color-azure-06: #6a62ea;
+  --puck-color-azure-07: #8983ef;
+  --puck-color-azure-08: #aaa6f4;
+  --puck-color-azure-09: #cdcafa;
+  --puck-color-azure-10: #e6e3ff;
+  --puck-color-azure-11: #f1efff;
+  --puck-color-azure-12: #f8f7ff;
+  --puck-font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Inspector polish: indigo accents on native range/checkbox controls ── */
+.puck-editor input[type="range"] { accent-color: var(--accent); }
+.puck-editor input[type="checkbox"],
+.puck-editor input[type="radio"] { accent-color: var(--accent); }

@@ -1,0 +1,21 @@
+{
+  "name": "campaign-editor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Campaign editor and site management workspace.",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "web:dev": "npm run dev --workspace @primitive/web",
+    "web:build": "npm run build --workspace @primitive/web",
+    "web:start": "npm run start --workspace @primitive/web",
+    "api:dev": "npm run dev --workspace @primitive/api"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "license": "MIT"
+}
