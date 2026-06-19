@@ -1,0 +1,1 @@
+ALTER TABLE "campaign_audience_fields" ADD COLUMN "generator" text;

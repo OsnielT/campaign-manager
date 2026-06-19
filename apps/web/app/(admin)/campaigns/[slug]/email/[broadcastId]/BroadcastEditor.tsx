@@ -294,7 +294,7 @@ export function BroadcastEditor({
               <CampaignThemeContext.Provider value={campaignTheme}>
                 {THEME_FIELDS.map((f) => (
                   <div key={f.key} style={{ marginBottom: 10 }}>
-                    {colorField(f.label).render({ value: (themeOverride as Record<string, unknown>)[f.key] ?? "", onChange: (v) => setTheme(f.key, v as string) })}
+                    {colorField(f.label, { inheritColor: (campaignTheme as unknown as Record<string, unknown>)[f.key] as string | undefined }).render({ value: (themeOverride as Record<string, unknown>)[f.key] ?? "", onChange: (v) => setTheme(f.key, v as string) })}
                   </div>
                 ))}
               </CampaignThemeContext.Provider>

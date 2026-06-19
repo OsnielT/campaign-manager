@@ -8,6 +8,13 @@
       "when": 1781888517036,
       "tag": "0000_far_kingpin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781890677370,
+      "tag": "0001_calm_killer_shrike",
+      "breakpoints": true
     }
   ]
 }

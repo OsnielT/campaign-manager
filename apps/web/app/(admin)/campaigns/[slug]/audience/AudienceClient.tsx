@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Stack, Text, Button } from "@primitive/react";
+import { GENERATOR_KEYS, GENERATOR_LABELS, resolveGenerator } from "@/lib/audience/generator-types";
 
 interface AudienceField {
   id: string;
@@ -11,6 +12,7 @@ interface AudienceField {
   required: boolean;
   position: number;
   onActivation: string | null;
+  generator: string | null;
 }
 
 interface AudienceRecord {
@@ -138,6 +140,36 @@ export function AudienceClient({
   const [activationSaved, setActivationSaved] = useState(false);
 
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Generate-test-data modal
+  const [genOpen, setGenOpen] = useState(false);
+  const [genCount, setGenCount] = useState(25);
+  const [genOverrides, setGenOverrides] = useState<Record<string, string>>({});
+  const [generating, setGenerating] = useState(false);
+
+  async function handleGenerate() {
+    setGenerating(true);
+    try {
+      const res = await fetch(`/api/campaigns/${campaignSlug}/audience/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf() },
+        body: JSON.stringify({ count: genCount, generators: genOverrides }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setImportResult({ inserted: data.inserted, skipped: data.skipped });
+        setGenOpen(false);
+        await loadFields();
+        await loadRecords(1, "");
+      } else {
+        setImportResult({ inserted: 0, skipped: 0, errors: [data.error?.message ?? "Generation failed"] });
+      }
+    } catch {
+      setImportResult({ inserted: 0, skipped: 0, errors: ["Network error — generation failed"] });
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   const loadFields = useCallback(async () => {
     const res = await fetch(`/api/campaigns/${campaignSlug}/audience/fields`, { cache: "no-store" });
@@ -384,6 +416,15 @@ export function AudienceClient({
                   onClick={() => fileRef.current?.click()}
                 >
                   {importing ? "Importing…" : "Choose CSV file"}
+                </Button>
+                <Button
+                  appearance="outline"
+                  tone="action"
+                  size="sm"
+                  disabled={generating}
+                  onClick={() => { setGenOverrides({}); setGenOpen(true); }}
+                >
+                  Generate test data
                 </Button>
                 {totalRecords > 0 && (
                   <Button appearance="outline" tone="neutral" size="sm" onClick={() => setStep("records")}>
@@ -675,6 +716,60 @@ export function AudienceClient({
 
       {/* ── 3. Records ── */}
       {/* ── Edit Record Modal ── */}
+      {genOpen && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
+          onClick={() => setGenOpen(false)}>
+          <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 12, padding: "24px 28px", width: 460, maxWidth: "90vw", maxHeight: "85vh", overflowY: "auto" }}
+            onClick={(e) => e.stopPropagation()}>
+            <Text as="h3" size="md" weight="semibold" style={{ marginBottom: 6 }}>Generate test data</Text>
+            <Text size="sm" tone="secondary" style={{ marginBottom: 16 }}>
+              Creates fake records with realistic values. Each record gets a name + email
+              {fields.length > 0 ? ", plus the fields below." : " (add fields via CSV or a template for more)."}
+            </Text>
+
+            <label style={{ fontSize: 13, fontWeight: 500, display: "flex", flexDirection: "column", gap: 5, marginBottom: 14 }}>
+              How many?
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <input type="number" min={1} max={500} value={genCount}
+                  onChange={(e) => setGenCount(Math.max(1, Math.min(500, Number(e.target.value) || 1)))}
+                  style={{ ...fixedInputStyle, width: 100 }} />
+                {[10, 25, 100].map((n) => (
+                  <Button key={n} appearance="outline" tone="neutral" size="sm" onClick={() => setGenCount(n)}>{n}</Button>
+                ))}
+              </div>
+            </label>
+
+            {fields.length > 0 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, borderTop: "1px solid var(--border)", paddingTop: 14 }}>
+                <Text size="sm" weight="semibold">Field data types</Text>
+                {fields.map((f) => (
+                  <div key={f.key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+                    <span style={{ fontSize: 13 }}>{f.label} <code style={{ fontSize: 11, color: "var(--text-muted)" }}>({f.key})</code>{f.onActivation ? <em style={{ fontSize: 11, color: "var(--text-muted)" }}> · set on activation</em> : null}</span>
+                    <select
+                      disabled={!!f.onActivation}
+                      value={genOverrides[f.key] ?? resolveGenerator(f)}
+                      onChange={(e) => setGenOverrides((prev) => ({ ...prev, [f.key]: e.target.value }))}
+                      style={{ ...fixedInputStyle, width: 170, opacity: f.onActivation ? 0.5 : 1 }}
+                    >
+                      {GENERATOR_KEYS.map((g) => (
+                        <option key={g} value={g}>{GENERATOR_LABELS[g]}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
+              <Button appearance="outline" tone="neutral" size="sm" onClick={() => setGenOpen(false)}>Cancel</Button>
+              <Button appearance="solid" tone="action" size="sm" disabled={generating} onClick={handleGenerate}>
+                {generating ? "Generating…" : `Generate ${genCount}`}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {editRecord && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}
           onClick={() => setEditRecord(null)}>
@@ -734,6 +829,9 @@ export function AudienceClient({
                 <>
                   <Button size="sm" appearance="outline" tone="neutral" onClick={() => setStep("import")}>
                     Import more
+                  </Button>
+                  <Button size="sm" appearance="outline" tone="action" disabled={generating} onClick={() => { setGenOverrides({}); setGenOpen(true); }}>
+                    Generate test data
                   </Button>
                   {totalRecords > 0 && (
                     <Button size="sm" appearance="outline" tone="danger" onClick={handleTruncate}>

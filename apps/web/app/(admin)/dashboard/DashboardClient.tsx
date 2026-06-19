@@ -247,16 +247,17 @@ export function DashboardClient({ userName, org, initialMetrics, checklist, init
         ) : (
           <div style={tableWrap}>
             <table style={table}>
-              <thead><tr>{["Name", "Status", "Records", "Activations", "Conversions", "Conv. rate", ""].map((h) => <th key={h} style={th}>{h}</th>)}</tr></thead>
+              <thead><tr>{["Name", "Status", "Records", "Activations", "Sessions", "Conversions", "Conv. rate", ""].map((h) => <th key={h} style={th}>{h}</th>)}</tr></thead>
               <tbody>
                 {leaderRows.map((c: LeaderRow) => (
                   <tr key={c.id} style={tr}>
-                    <td style={td}><Link href={`/campaigns/${c.slug}`} style={nameLink}>{c.name}</Link><span style={slugLabel}>/{c.slug}</span></td>
+                    <td style={td}><Link href={`/campaigns/${c.slug}`} style={nameLink}>{c.name}</Link></td>
                     <td style={td}><span style={{ ...statusPill, ...(STATUS_STYLES[c.status] ?? {}) }}>{c.status}</span></td>
                     <td style={{ ...td, color: "var(--text-secondary)" }}>{c.records.toLocaleString()}</td>
                     <td style={{ ...td, color: "var(--text-secondary)" }}>{c.activations.toLocaleString()}</td>
+                    <td style={{ ...td, color: "var(--text-secondary)" }}>{c.sessions.toLocaleString()}</td>
                     <td style={{ ...td, color: "var(--text-secondary)" }}>{c.conversions.toLocaleString()}</td>
-                    <td style={{ ...td, fontWeight: 600 }}>{Math.round(c.convRate * 100)}%</td>
+                    <td style={{ ...td, fontWeight: 600 }}>{c.convRate === null ? "—" : `${Math.round(c.convRate * 100)}%`}</td>
                     <td style={{ ...td, textAlign: "right" }}><Link href={`/campaigns/${c.slug}`} style={editLink}>Open <ArrowRight size={11} style={{ display: "inline", verticalAlign: "middle" }} /></Link></td>
                   </tr>
                 ))}

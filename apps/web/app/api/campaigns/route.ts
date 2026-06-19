@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { campaigns, campaignPages, campaignPageCompositions, campaignFlowNodes, campaignFlowEdges, organizations, orgMembers, emailBroadcasts } from "@/lib/db/schema";
+import { campaigns, campaignPages, campaignPageCompositions, campaignFlowNodes, campaignFlowEdges, organizations, orgMembers, emailBroadcasts, campaignAudienceFields } from "@/lib/db/schema";
 import { requireRole } from "@/lib/auth/rbac";
 import { assertWithinPlan } from "@/lib/stripe/plans";
 import { errorResponse, statusFor, forbidden, badRequest, notFound } from "@/lib/errors";
@@ -8,6 +8,7 @@ import { eq, and, desc } from "drizzle-orm";
 import { instantiateCampaign } from "@/lib/campaign-engine/instantiate";
 import { defaultTreeFor } from "@/lib/builder/default-content";
 import { emailSeedFor } from "@/lib/email/seed-templates";
+import { audienceFieldsFor } from "@/lib/audience/seed-fields";
 
 function slugify(name: string): string {
   return name
@@ -406,6 +407,23 @@ export async function POST(req: NextRequest) {
 
       if (edgeValues.length) {
         await tx.insert(campaignFlowEdges).values(edgeValues);
+      }
+
+      // Seed standard audience fields (with test-data generator types) so the
+      // campaign can generate test data immediately.
+      const seedFields = audienceFieldsFor(templateId as string);
+      if (seedFields.length > 0) {
+        await tx.insert(campaignAudienceFields).values(
+          seedFields.map((f) => ({
+            campaignId: newCampaign.id,
+            key: f.key,
+            label: f.label,
+            type: f.type,
+            required: f.required ?? false,
+            position: f.position,
+            generator: f.generator,
+          })),
+        );
       }
 
       // Seed a template-aligned starter email broadcast for the campaign flow.

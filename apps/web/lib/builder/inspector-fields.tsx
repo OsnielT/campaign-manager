@@ -165,7 +165,7 @@ const SwatchBtn = ({ color, active, title, onClick }: { color: string; active: b
   />
 );
 
-function ColorField({ label, value, onChange }: { label: string; value: unknown; onChange: (v: string) => void }) {
+function ColorField({ label, value, onChange, inheritColor }: { label: string; value: unknown; onChange: (v: string) => void; inheritColor?: string }) {
   const theme = useCampaignTheme();
   const current = (value as string) || "";
   const isGradient = /gradient\(/i.test(current);
@@ -209,9 +209,14 @@ function ColorField({ label, value, onChange }: { label: string; value: unknown;
           title="Edit color"
           style={{
             width: 26, height: 26, borderRadius: "var(--radius-sm,4px)", flexShrink: 0, cursor: "pointer",
-            border: "1px solid var(--border, #c7c4d8)", padding: 0,
+            // When empty, show the inherited theme color (dashed border signals
+            // "inherited, not set"); otherwise the chosen color, else a checker.
+            border: current ? "1px solid var(--border, #c7c4d8)" : inheritColor ? "1px dashed var(--border, #c7c4d8)" : "1px solid var(--border, #c7c4d8)",
+            padding: 0,
             background: current
               ? `${preview}`
+              : inheritColor
+              ? inheritColor
               : "repeating-conic-gradient(#e2e7ff 0% 25%, #fff 0% 50%) 50% / 10px 10px",
           }}
         />
@@ -219,7 +224,7 @@ function ColorField({ label, value, onChange }: { label: string; value: unknown;
           type="text"
           value={current}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="inherit from theme"
+          placeholder={inheritColor ? `inherit · ${inheritColor}` : "inherit from theme"}
           style={{ ...inputStyle, flex: 1 }}
         />
         {current && (
@@ -340,12 +345,12 @@ const popoverStyle: React.CSSProperties = {
   boxShadow: "var(--shadow, 0 4px 12px rgba(19,27,46,0.08))",
 };
 
-export function colorField(label: string) {
+export function colorField(label: string, opts?: { inheritColor?: string }) {
   return {
     type: "custom" as const,
     label,
     render: ({ value, onChange }: { value: unknown; onChange: (v: string) => void }) => (
-      <ColorField label={label} value={value} onChange={onChange} />
+      <ColorField label={label} value={value} onChange={onChange} inheritColor={opts?.inheritColor} />
     ),
   };
 }

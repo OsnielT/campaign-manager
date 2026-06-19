@@ -286,6 +286,8 @@ export const campaignAudienceFields = pgTable(
     // "timestamp" = write ISO timestamp when visitor activates their code
     // "fixed:<value>" = write the literal value after the colon
     onActivation: text("on_activation"),
+    // Test-data generator type (see lib/audience/generate.ts). null = infer.
+    generator: text("generator"),
   },
   (t) => [uniqueIndex("audience_fields_campaign_key_idx").on(t.campaignId, t.key)]
 );

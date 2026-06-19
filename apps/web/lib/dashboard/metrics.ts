@@ -48,7 +48,9 @@ export interface LeaderRow {
   records: number;
   activations: number;
   conversions: number;
-  convRate: number; // conversions / sessions (0..1)
+  sessions: number;
+  // Converted sessions / sessions (0..1), or null when there are no sessions yet.
+  convRate: number | null;
 }
 
 export interface RecentBroadcast {
@@ -303,17 +305,17 @@ async function buildRecentCampaigns(orgId: string, ids: string[]): Promise<Leade
     db.select({ campaignId: campaignAudienceRecords.campaignId, cnt: sql<number>`count(*)::int` }).from(campaignAudienceRecords).where(inArray(campaignAudienceRecords.campaignId, topIds)).groupBy(campaignAudienceRecords.campaignId),
     db.select({ campaignId: campaignAudienceRecords.campaignId, cnt: sql<number>`count(*)::int` }).from(campaignAudienceRecords).where(and(inArray(campaignAudienceRecords.campaignId, topIds), ACTIVATED)).groupBy(campaignAudienceRecords.campaignId),
     db.select({ campaignId: campaignConversions.campaignId, cnt: sql<number>`count(*)::int` }).from(campaignConversions).where(inArray(campaignConversions.campaignId, topIds)).groupBy(campaignConversions.campaignId),
-    db.select({ campaignId: campaignSessions.campaignId, cnt: sql<number>`count(*)::int` }).from(campaignSessions).where(inArray(campaignSessions.campaignId, topIds)).groupBy(campaignSessions.campaignId),
+    db.select({ campaignId: campaignSessions.campaignId, total: sql<number>`count(*)::int`, converted: sql<number>`count(*) filter (where ${campaignSessions.convertedAt} is not null)::int` }).from(campaignSessions).where(inArray(campaignSessions.campaignId, topIds)).groupBy(campaignSessions.campaignId),
   ]);
   const recMap = Object.fromEntries(records.map((r) => [r.campaignId, r.cnt]));
   const actMap = Object.fromEntries(activations.map((r) => [r.campaignId, r.cnt]));
   const convMap = Object.fromEntries(conversions.map((r) => [r.campaignId, r.cnt]));
-  const sessMap = Object.fromEntries(sessions.map((r) => [r.campaignId, r.cnt]));
+  const sessMap = Object.fromEntries(sessions.map((r) => [r.campaignId, r]));
 
   return meta.map((m) => {
-    const conv = convMap[m.id] ?? 0;
-    const sess = sessMap[m.id] ?? 0;
-    return { id: m.id, name: m.name, slug: m.slug, status: m.status, records: recMap[m.id] ?? 0, activations: actMap[m.id] ?? 0, conversions: conv, convRate: sess > 0 ? conv / sess : 0 };
+    const s = sessMap[m.id];
+    const sess = s?.total ?? 0;
+    return { id: m.id, name: m.name, slug: m.slug, status: m.status, records: recMap[m.id] ?? 0, activations: actMap[m.id] ?? 0, conversions: convMap[m.id] ?? 0, sessions: sess, convRate: sess > 0 ? (s!.converted) / sess : null };
   });
 }
 
@@ -391,17 +393,18 @@ async function buildLeaderboard(ids: string[], since: Date): Promise<LeaderRow[]
     db.select({ id: campaigns.id, name: campaigns.name, slug: campaigns.slug, status: campaigns.status }).from(campaigns).where(inArray(campaigns.id, topIds)),
     db.select({ campaignId: campaignAudienceRecords.campaignId, cnt: sql<number>`count(*)::int` }).from(campaignAudienceRecords).where(inArray(campaignAudienceRecords.campaignId, topIds)).groupBy(campaignAudienceRecords.campaignId),
     db.select({ campaignId: campaignAudienceRecords.campaignId, cnt: sql<number>`count(*)::int` }).from(campaignAudienceRecords).where(and(inArray(campaignAudienceRecords.campaignId, topIds), ACTIVATED)).groupBy(campaignAudienceRecords.campaignId),
-    db.select({ campaignId: campaignSessions.campaignId, cnt: sql<number>`count(*)::int` }).from(campaignSessions).where(inArray(campaignSessions.campaignId, topIds)).groupBy(campaignSessions.campaignId),
+    db.select({ campaignId: campaignSessions.campaignId, total: sql<number>`count(*)::int`, converted: sql<number>`count(*) filter (where ${campaignSessions.convertedAt} is not null)::int` }).from(campaignSessions).where(inArray(campaignSessions.campaignId, topIds)).groupBy(campaignSessions.campaignId),
   ]);
 
   const metaMap = Object.fromEntries(meta.map((m) => [m.id, m]));
   const recMap = Object.fromEntries(records.map((r) => [r.campaignId, r.cnt]));
   const actMap = Object.fromEntries(activations.map((r) => [r.campaignId, r.cnt]));
-  const sessMap = Object.fromEntries(sessions.map((r) => [r.campaignId, r.cnt]));
+  const sessMap = Object.fromEntries(sessions.map((r) => [r.campaignId, r]));
 
   return convRows.map((r) => {
     const m = metaMap[r.campaignId];
-    const sess = sessMap[r.campaignId] ?? 0;
+    const s = sessMap[r.campaignId];
+    const sess = s?.total ?? 0;
     return {
       id: r.campaignId,
       name: m?.name ?? "—",
@@ -410,7 +413,8 @@ async function buildLeaderboard(ids: string[], since: Date): Promise<LeaderRow[]
       records: recMap[r.campaignId] ?? 0,
       activations: actMap[r.campaignId] ?? 0,
       conversions: r.cnt,
-      convRate: sess > 0 ? r.cnt / sess : 0,
+      sessions: sess,
+      convRate: sess > 0 ? (s!.converted) / sess : null,
     };
   });
 }

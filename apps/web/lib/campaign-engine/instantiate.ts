@@ -123,6 +123,7 @@ export async function instantiateCampaign(opts: InstantiateOptions) {
         required: field.required,
         position: field.position,
         onActivation: field.onActivation ?? undefined,
+        generator: field.generator ?? undefined,
       });
     }
 
