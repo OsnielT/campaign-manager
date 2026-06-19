@@ -38,6 +38,7 @@
     "react-dom": "^19.1.0",
     "react-email": "^4.0.16",
     "react-simple-code-editor": "^0.14.1",
+    "recharts": "^3.8.1",
     "resend": "^4.5.1",
     "stripe": "^17.7.0"
   },

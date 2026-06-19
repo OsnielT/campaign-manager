@@ -20,6 +20,8 @@ export const users = pgTable("users", {
   passwordHash: text("password_hash").notNull(),
   name: text("name").notNull(),
   emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
+  // Per-user UI preferences (e.g. dashboard widget visibility + order).
+  dashboardPrefs: jsonb("dashboard_prefs"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
