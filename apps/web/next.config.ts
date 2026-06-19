@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 
 const R2_IMG = process.env.R2_PUBLIC_BASE_URL ?? "";
 const DEV = process.env.NODE_ENV === "development";
-// Next.js dev server requires both unsafe-eval (webpack HMR) and unsafe-inline
-// (app-router bootstrap scripts). Neither is needed in production builds.
-const DEV_SCRIPT = DEV ? " 'unsafe-inline' 'unsafe-eval'" : "";
+// Next.js App Router always injects inline scripts for hydration (even in production).
+// unsafe-eval is only needed in dev (webpack HMR).
+const DEV_EVAL = DEV ? " 'unsafe-eval'" : "";
 
 const BASE_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -32,20 +32,26 @@ function csp(scriptSrc: string) {
   };
 }
 
-// Public campaign pages — strict, no Stripe needed
+// Public campaign pages — allow inline scripts for Next.js hydration
 const publicHeaders = [
   ...BASE_HEADERS,
-  csp(`script-src 'self'${DEV_SCRIPT}`),
+  csp(`script-src 'self' 'unsafe-inline'${DEV_EVAL}`),
 ];
 
 // Authenticated admin pages — allow Stripe.js, no framing
 const adminHeaders = [
   ...BASE_HEADERS,
   { key: "X-Frame-Options", value: "DENY" },
-  csp(`script-src 'self' https://js.stripe.com${DEV_SCRIPT}`),
+  csp(`script-src 'self' 'unsafe-inline' https://js.stripe.com${DEV_EVAL}`),
 ];
 
-// Puck page editor — needs unsafe-inline + unsafe-eval for builder runtime
+// Preview pages — same as public
+const previewHeaders = [
+  ...BASE_HEADERS,
+  csp(`script-src 'self' 'unsafe-inline'${DEV_EVAL}`),
+];
+
+// Puck page editor — needs unsafe-eval for builder runtime
 const editorHeaders = [
   ...BASE_HEADERS,
   { key: "X-Frame-Options", value: "DENY" },
@@ -73,6 +79,9 @@ const nextConfig: NextConfig = {
     return [
       // Public campaign pages (matched first, may be overridden below)
       { source: "/:orgSlug/:campaignSlug/:path*", headers: publicHeaders },
+
+      // Preview pages
+      { source: "/preview/:path*", headers: previewHeaders },
 
       // Admin API routes
       { source: "/api/:path*", headers: adminHeaders },
