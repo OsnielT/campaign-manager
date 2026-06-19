@@ -54,11 +54,11 @@ const editorHeaders = [
 
 const nextConfig: NextConfig = {
   transpilePackages: [
-    "@primitive/react",
-    "@primitive/tokens",
-    "@primitive/semantics",
-    "@primitive/primitives",
-    "@primitive/contracts",
+    "@twinaholic/react",
+    "@twinaholic/tokens",
+    "@twinaholic/semantics",
+    "@twinaholic/primitives",
+    "@twinaholic/contracts",
     "@primitive/campaign-domain",
     "@measured/puck",
   ],

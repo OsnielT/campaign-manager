@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useContext } from "react";
-import { Box, Stack, Text, Button, Card, Badge, Input, Textarea } from "@primitive/react";
+import { Box, Stack, Text, Button, Card, Badge, Input, Textarea } from "@twinaholic/react";
 import { CampaignThemeContext, computeCampaignStyles, type CampaignStyles } from "@/lib/builder/campaign-theme-context";
 import {
   CampaignNav,

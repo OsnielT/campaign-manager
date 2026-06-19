@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Stack, Text, Button, Badge } from "@primitive/react";
+import { Stack, Text, Button, Badge } from "@twinaholic/react";
 import { Upload, Copy, Check, Trash2, ImageOff } from "lucide-react";
 
 interface MediaAsset {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Stack, Text, Button } from "@primitive/react";
+import { Stack, Text, Button } from "@twinaholic/react";
 import { GENERATOR_KEYS, GENERATOR_LABELS, resolveGenerator } from "@/lib/audience/generator-types";
 
 interface AudienceField {

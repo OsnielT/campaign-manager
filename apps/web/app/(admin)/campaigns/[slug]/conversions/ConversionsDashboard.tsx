@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button, Stack, Text } from '@primitive/react';
+import { Badge, Button, Stack, Text } from '@twinaholic/react';
 import { useCallback, useEffect, useState } from 'react';
 
 type Tab = 'summary' | 'funnel' | 'timeseries' | 'conversions' | 'audience' | 'lookup-log' | 'deliveries';

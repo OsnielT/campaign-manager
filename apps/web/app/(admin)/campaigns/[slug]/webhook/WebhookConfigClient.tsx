@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
-import { Stack, Text, Button, Input } from "@primitive/react";
+import { Stack, Text, Button, Input } from "@twinaholic/react";
 
 interface WebhookConfig {
   id: string;

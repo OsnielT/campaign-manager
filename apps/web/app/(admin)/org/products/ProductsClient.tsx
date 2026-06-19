@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, FormEvent } from "react";
-import { Stack, Text, Button, Input, Textarea, Badge } from "@primitive/react";
+import { Stack, Text, Button, Input, Textarea, Badge } from "@twinaholic/react";
 import { Plus, Pencil, Trash2, Save, X, Package } from "lucide-react";
 
 interface OrgProduct {

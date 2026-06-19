@@ -10,7 +10,7 @@ import {
   Badge,
   Input,
   Textarea,
-} from "@primitive/react";
+} from "@twinaholic/react";
 import { useCampaignTheme, computeCampaignStyles } from "@/lib/builder/campaign-theme-context";
 import { buildThemeVars, resolveFontFamily } from "@/lib/campaign-engine/theme";
 import { campaignBlockConfigs } from "@/lib/builder/campaign-blocks";
@@ -53,7 +53,7 @@ function styleOverrides(props: Record<string, unknown>, keys: string[]): React.C
 }
 
 // ─── Campaign theme style overrides ──────────────────────────────────────────
-// @primitive/react resolves styles from the token catalog as concrete values,
+// @twinaholic/react resolves styles from the token catalog as concrete values,
 // not CSS variables. To apply campaign branding, we pass inline style overrides
 // via the `style` prop, which wins via mergeStyle({ ...resolved, ...style }).
 
