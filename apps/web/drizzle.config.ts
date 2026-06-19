@@ -12,17 +12,19 @@ for (const file of [".env.local", ".env"]) {
   }
 }
 
-// Parse the DATABASE_URL into parts so we can pass ssl: false explicitly.
-// The postgres driver may hang when using a URL string on local non-SSL servers.
+// Parse the DATABASE_URL into parts so we can pass ssl explicitly.
+// Local non-SSL servers need ssl: false to avoid hangs; remote servers (Neon, etc.) need ssl: true.
 function parseDbUrl(url: string) {
   const u = new URL(url);
+  const sslmode = u.searchParams.get("sslmode");
+  const ssl = sslmode === "disable" ? false : sslmode ? true : u.hostname !== "localhost";
   return {
     host: u.hostname,
     port: u.port ? Number(u.port) : 5432,
     user: u.username,
     password: u.password,
     database: u.pathname.replace(/^\//, ""),
-    ssl: false,
+    ssl,
   };
 }
 
