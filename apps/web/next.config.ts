@@ -77,6 +77,9 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   async headers() {
     return [
+      // Landing page
+      { source: "/", headers: publicHeaders },
+
       // Public campaign pages (matched first, may be overridden below)
       { source: "/:orgSlug/:campaignSlug/:path*", headers: publicHeaders },
 
