@@ -13,6 +13,7 @@ import {
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
+  User
 } from "lucide-react";
 import StemflowLogo from "@/components/branding/StemflowLogo";
 import { useRouter } from 'next/navigation';
@@ -68,7 +69,7 @@ export function SidebarNav({
             <StemflowLogo width={100} />
           </div>
         )}
-        {collapsed && <span style={logoMark} />}
+        {/* {collapsed && <span style={logoMark} />} */}
         {onToggle && (
           <button
             onClick={onToggle}
@@ -113,11 +114,12 @@ export function SidebarNav({
       <div style={{ ...footer, width: "100%" }}>
         <Button
           onClick={() => LogoutButton(router)}
-          style={navLink}
-          title={collapsed ? "Sign out" : undefined}
+          style={{ padding: "0.5rem 0.5rem", lineHeight: 'auto', borderRadius: '0.25rem', background: 'var(--accent)', borderColor: 'var(--accent)', margin: '0 auto' }}
         >
-          <LogOut size={16} strokeWidth={1.8} style={{ flexShrink: 0 }} />
-          {!collapsed && "Sign out"}
+          <span style={{ display: 'flex', gap: '0.25rem', fontSize:'16px' }}>
+            <User size={18} style={{ flexShrink: 0 }} />
+            {!collapsed && <>Logout</>}
+          </span>
         </Button>
       </div>
     </nav>
@@ -138,22 +140,6 @@ const nav: React.CSSProperties = {
 const logoRow: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
-};
-
-const logoMark: React.CSSProperties = {
-  width: "22px",
-  height: "22px",
-  borderRadius: "5px",
-  background: "var(--accent)",
-  flexShrink: 0,
-  display: "block",
-};
-
-const logoLabel: React.CSSProperties = {
-  fontSize: "14px",
-  fontWeight: "600",
-  letterSpacing: "-0.3px",
-  color: "var(--text-primary)",
 };
 
 const list: React.CSSProperties = {
