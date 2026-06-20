@@ -15,16 +15,26 @@ import {
   PanelLeftOpen,
 } from "lucide-react";
 import StemflowLogo from "../branding/StemflowLogo";
+import { useRouter } from 'next/navigation';
+import { Button } from "@twinaholic/react";
 
 const NAV_ITEMS = [
-  { href: "/dashboard",    label: "Dashboard", Icon: LayoutDashboard },
-  { href: "/campaigns",    label: "Campaigns", Icon: Megaphone },
-  { href: "/templates",    label: "Templates", Icon: LayoutTemplate },
-  { href: "/media",        label: "Media",     Icon: ImageIcon },
-  { href: "/org/products", label: "Products",  Icon: Package },
-  { href: "/org/members",  label: "Members",   Icon: Users },
-  { href: "/org/settings", label: "Settings",  Icon: Settings },
+  { href: "/dashboard", label: "Dashboard", Icon: LayoutDashboard },
+  { href: "/campaigns", label: "Campaigns", Icon: Megaphone },
+  { href: "/templates", label: "Templates", Icon: LayoutTemplate },
+  { href: "/media", label: "Media", Icon: ImageIcon },
+  { href: "/org/products", label: "Products", Icon: Package },
+  { href: "/org/members", label: "Members", Icon: Users },
+  { href: "/org/settings", label: "Settings", Icon: Settings },
 ];
+
+function LogoutButton(router: any) {
+  try {
+    return (window.confirm("Are you sure you want to logout?")) ? router.push("/login") : null;
+  } catch (err) {
+    alert("Something went wrong while logging out.");
+  }
+};
 
 export function SidebarNav({
   collapsed = false,
@@ -33,6 +43,7 @@ export function SidebarNav({
   collapsed?: boolean;
   onToggle?: () => void;
 }) {
+  const router = useRouter();
   const pathname = usePathname();
 
   return (
@@ -100,14 +111,14 @@ export function SidebarNav({
 
       {/* Footer */}
       <div style={{ ...footer, width: "100%" }}>
-        <Link
-          href="/logout"
+        <Button
+          onClick={() => LogoutButton(router)}
           style={navLink}
           title={collapsed ? "Sign out" : undefined}
         >
           <LogOut size={16} strokeWidth={1.8} style={{ flexShrink: 0 }} />
           {!collapsed && "Sign out"}
-        </Link>
+        </Button>
       </div>
     </nav>
   );
