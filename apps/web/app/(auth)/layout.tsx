@@ -1,3 +1,4 @@
+import StemflowLogo from "@/components/branding/StemflowLogo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -6,10 +7,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div style={shell}>
       <div style={card}>
-        <div style={logo}>
-          <span style={logoMark} />
-          <span style={logoText}>Primitive</span>
+        <div style={logoWrapper}>
+         <StemflowLogo width={130} />
         </div>
+
         {children}
       </div>
     </div>
@@ -22,7 +23,8 @@ const shell: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   padding: "24px",
-  background: "radial-gradient(ellipse at 50% 0%, #7c5af310 0%, transparent 70%), var(--bg)",
+  background:
+    "radial-gradient(ellipse at 50% 0%, #7c5af310 0%, transparent 70%), var(--bg)",
 };
 
 const card: React.CSSProperties = {
@@ -35,24 +37,29 @@ const card: React.CSSProperties = {
   boxShadow: "var(--shadow)",
 };
 
-const logo: React.CSSProperties = {
+const logoWrapper: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
-  gap: "10px",
   marginBottom: "32px",
 };
 
-const logoMark: React.CSSProperties = {
-  display: "inline-block",
-  width: "28px",
-  height: "28px",
-  borderRadius: "7px",
-  background: "linear-gradient(135deg, #7c5af3, #a78bfa)",
-};
+const animatedLogo: React.CSSProperties = {
+  width: "160px",
+  height: "32px",
 
-const logoText: React.CSSProperties = {
-  fontSize: "17px",
-  fontWeight: "600",
-  color: "var(--text-primary)",
-  letterSpacing: "-0.3px",
+  background:
+    "linear-gradient(90deg, #3525cd, #7c5af3, #00d4ff, #a78bfa, #3525cd)",
+  backgroundSize: "300% 100%",
+
+  maskImage: 'url("/stemflow-logo-bw.svg")',
+  maskRepeat: "no-repeat",
+  maskPosition: "center",
+  maskSize: "contain",
+
+  WebkitMaskImage: 'url("/stemflow-logo-bw.svg")',
+  WebkitMaskRepeat: "no-repeat",
+  WebkitMaskPosition: "center",
+  WebkitMaskSize: "contain",
+
+  animation: "stemflowGradientMove 4s ease-in-out infinite",
 };

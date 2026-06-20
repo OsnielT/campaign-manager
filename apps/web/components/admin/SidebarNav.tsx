@@ -14,6 +14,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
 } from "lucide-react";
+import StemflowLogo from "../branding/StemflowLogo";
 
 const NAV_ITEMS = [
   { href: "/dashboard",    label: "Dashboard", Icon: LayoutDashboard },
@@ -53,8 +54,7 @@ export function SidebarNav({
       >
         {!collapsed && (
           <div style={{ display: "flex", alignItems: "center", gap: "9px", paddingLeft: "8px" }}>
-            <span style={logoMark} />
-            <span style={logoLabel}>Primitive</span>
+            <StemflowLogo width={100} />
           </div>
         )}
         {collapsed && <span style={logoMark} />}
