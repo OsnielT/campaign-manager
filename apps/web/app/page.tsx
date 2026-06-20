@@ -1,7 +1,23 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
+import type { Metadata } from "next";
 import "./landing.css";
+
+export const metadata: Metadata = {
+  title: "Stemflow — Multi-step campaign builder",
+  description: "Build conditional page flows, send email broadcasts, target audiences, and track conversions. Stemflow is the campaign editor for marketing teams.",
+  openGraph: {
+    title: "Stemflow — Multi-step campaign builder",
+    description: "Build conditional page flows, send email broadcasts, target audiences, and track conversions.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Stemflow — Multi-step campaign builder",
+    description: "Build conditional page flows, send email broadcasts, target audiences, and track conversions.",
+  },
+};
 
 export default async function RootPage() {
   const session = await getSession();
@@ -21,7 +37,7 @@ export default async function RootPage() {
       <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
         <div className="flex justify-between items-center h-14 px-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-8">
-            <span className="text-xl font-bold text-primary">Primitive</span>
+            <span className="text-xl font-bold text-primary">Stemflow</span>
             <div className="hidden md:flex gap-6">
               <a className="text-sm text-primary border-b-2 border-primary pb-1 transition-colors" href="#features">Features</a>
               <a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#editor">Editor</a>
@@ -46,7 +62,7 @@ export default async function RootPage() {
               Build, publish, and track multi-step marketing campaigns
             </h1>
             <p className="text-base text-on-surface-variant mb-10 max-w-2xl mx-auto leading-relaxed">
-              Primitive is a campaign editor for building conditional page flows, targeting audiences, sending email broadcasts, and tracking conversions — all in one place.
+              Stemflow is a campaign editor for building conditional page flows, targeting audiences, sending email broadcasts, and tracking conversions — all in one place.
             </p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
               <Link href="/signup" className="w-full sm:w-auto text-xs font-semibold bg-primary text-on-primary px-8 py-4 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-95">
@@ -325,7 +341,7 @@ export default async function RootPage() {
         <div className="max-w-7xl mx-auto py-12 px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             <div>
-              <span className="text-base font-bold text-on-surface block mb-4">Primitive</span>
+              <span className="text-base font-bold text-on-surface block mb-4">Stemflow</span>
               <p className="text-sm text-on-surface-variant">A platform for building, theming, and publishing multi-step marketing campaigns.</p>
             </div>
             <div>
@@ -347,9 +363,9 @@ export default async function RootPage() {
             </div>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 py-8 border-t border-outline-variant/10">
-            <p className="text-xs text-on-surface-variant/70">© 2025 Primitive. All rights reserved.</p>
+            <p className="text-xs text-on-surface-variant/70">© 2025 Stemflow. All rights reserved.</p>
             <div className="flex gap-6">
-              <a className="text-xs text-on-surface-variant/70 hover:text-on-surface transition-colors" href="mailto:support@primitive.com">Contact Support</a>
+              <a className="text-xs text-on-surface-variant/70 hover:text-on-surface transition-colors" href="mailto:support@stemflow.io">Contact Support</a>
             </div>
           </div>
         </div>
