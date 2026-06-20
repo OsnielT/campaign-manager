@@ -10,7 +10,6 @@ import {
   Package,
   Users,
   Settings,
-  LogOut,
   PanelLeftClose,
   PanelLeftOpen,
   User
@@ -31,7 +30,7 @@ const NAV_ITEMS = [
 
 function LogoutButton(router: any) {
   try {
-    return (window.confirm("Are you sure you want to logout?")) ? router.push("/login") : null;
+    return (window.confirm("Are you sure you want to logout?")) ? router.push("/logout") : null;
   } catch (err) {
     alert("Something went wrong while logging out.");
   }

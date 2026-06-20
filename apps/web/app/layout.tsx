@@ -1,10 +1,41 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
+
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://stemflow.dev";
+
 export const metadata: Metadata = {
-  title: { default: "Stemflow", template: "%s | Stemflow" },
-  description: "Build, publish, and track multi-step marketing campaigns. Drag-and-drop page builder, conditional flow engine, email broadcasts, and conversion tracking — all in one place.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://stemflow.io"),
+  metadataBase: new URL(siteUrl),
+
+  title: {
+    default: "Stemflow | Multi-Step Marketing Campaign Builder",
+    template: "%s | Stemflow",
+  },
+
+  description:
+    "Stemflow helps teams build, publish, and track multi-step marketing campaigns with conditional page flows, audience targeting, email broadcasts, and conversion tracking.",
+
+  keywords: [
+    "Stemflow",
+    "marketing campaign builder",
+    "multi-step campaigns",
+    "campaign editor",
+    "landing page builder",
+    "conditional flows",
+    "audience targeting",
+    "email broadcasts",
+    "conversion tracking",
+    "marketing automation",
+  ],
+
+  authors: [{ name: "Stemflow" }],
+  creator: "Stemflow",
+  publisher: "Stemflow",
+
+  alternates: {
+    canonical: "/",
+  },
+
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -13,30 +44,61 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-icon.png" }],
   },
+
   manifest: "/site.webmanifest",
+
   openGraph: {
     type: "website",
     siteName: "Stemflow",
-    title: "Stemflow",
-    description: "Build, publish, and track multi-step marketing campaigns.",
-    url: process.env.NEXT_PUBLIC_APP_URL ?? "https://stemflow.io",
+    title: "Stemflow | Multi-Step Marketing Campaign Builder",
+    description:
+      "Build, publish, and track multi-step marketing campaigns with conditional page flows, audience targeting, email broadcasts, and conversion tracking.",
+    url: siteUrl,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Stemflow multi-step marketing campaign builder interface",
+      },
+    ],
+    locale: "en_US",
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "Stemflow",
-    description: "Build, publish, and track multi-step marketing campaigns.",
+    title: "Stemflow | Multi-Step Marketing Campaign Builder",
+    description:
+      "Build, publish, and track multi-step marketing campaigns with conditional page flows, audience targeting, email broadcasts, and conversion tracking.",
+    images: ["/og-image.png"],
   },
+
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
+
+  applicationName: "Stemflow",
+
+  category: "Marketing",
+
+  themeColor: "#3525CD",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <Analytics />
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
