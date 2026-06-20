@@ -14,7 +14,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
 } from "lucide-react";
-import StemflowLogo from "../branding/StemflowLogo";
+import StemflowLogo from "@/components/branding/StemflowLogo";
 import { useRouter } from 'next/navigation';
 import { Button } from "@twinaholic/react";
 

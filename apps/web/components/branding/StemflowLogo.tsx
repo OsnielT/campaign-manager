@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import './stemflowLogo.css'
 
 type StemflowLogoProps = {
   width?: number | string;

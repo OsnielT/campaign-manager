@@ -42,24 +42,3 @@ const logoWrapper: React.CSSProperties = {
   alignItems: "center",
   marginBottom: "32px",
 };
-
-const animatedLogo: React.CSSProperties = {
-  width: "160px",
-  height: "32px",
-
-  background:
-    "linear-gradient(90deg, #3525cd, #7c5af3, #00d4ff, #a78bfa, #3525cd)",
-  backgroundSize: "300% 100%",
-
-  maskImage: 'url("/stemflow-logo-bw.svg")',
-  maskRepeat: "no-repeat",
-  maskPosition: "center",
-  maskSize: "contain",
-
-  WebkitMaskImage: 'url("/stemflow-logo-bw.svg")',
-  WebkitMaskRepeat: "no-repeat",
-  WebkitMaskPosition: "center",
-  WebkitMaskSize: "contain",
-
-  animation: "stemflowGradientMove 4s ease-in-out infinite",
-};

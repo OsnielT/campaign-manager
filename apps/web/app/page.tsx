@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import type { Metadata } from "next";
 import "./landing.css";
+import StemflowLogo from "@/components/branding/StemflowLogo";
 export const metadata: Metadata = {
   title: "Stemflow — Multi-step campaign builder",
   description: "Build conditional page flows, send email broadcasts, target audiences, and track conversions. Stemflow is the campaign editor for marketing teams.",
@@ -36,7 +37,7 @@ export default async function RootPage() {
       <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
         <div className="flex justify-between items-center h-14 px-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-8">
-            <div className="stemflow-logo-gradient" aria-label="Stemflow logo" role="img" />
+            <StemflowLogo />
             <div className="hidden md:flex gap-6">
               <a className="text-sm text-primary border-b-2 border-primary pb-1 transition-colors" href="#features">Features</a>
               <a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#editor">Editor</a>
