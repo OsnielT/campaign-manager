@@ -59,17 +59,16 @@ export default async function RootPage() {
         <section className="relative px-4 pt-16 pb-24 overflow-hidden">
           <div className="max-w-7xl mx-auto text-center relative z-10">
             <h1 className="text-5xl md:text-[56px] md:leading-[64px] font-extrabold text-on-surface mb-6 tracking-tight max-w-4xl mx-auto">
-              Build, publish, and track multi-step marketing campaigns
+              Launch smarter campaigns without stitching tools together
             </h1>
             <p className="text-base text-on-surface-variant mb-10 max-w-2xl mx-auto leading-relaxed">
-              Stemflow is a campaign editor for building conditional page flows, targeting audiences, sending email broadcasts, and tracking conversions — all in one place.
-            </p>
+              Stemflow gives marketing teams one place to build campaign pages, route visitors through conditional flows, send targeted emails, and measure what converts.            </p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
               <Link href="/signup" className="w-full sm:w-auto text-xs font-semibold bg-primary text-on-primary px-8 py-4 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-95">
-                Create an account
+                Start Building
               </Link>
               <a href="#editor" className="w-full sm:w-auto text-xs font-semibold border border-outline-variant text-on-surface px-8 py-4 rounded-xl hover:bg-surface-container transition-all active:scale-95">
-                See the editor
+                Preview the workspace
               </a>
             </div>
           </div>
@@ -81,8 +80,13 @@ export default async function RootPage() {
         <section id="editor" className="py-24 px-4 bg-surface">
           <div className="max-w-7xl mx-auto">
             <div className="mb-16 text-center">
-              <h2 className="text-2xl font-semibold text-on-surface mb-4">A Workspace Designed for Clarity</h2>
-              <p className="text-sm text-on-surface-variant max-w-xl mx-auto">The same drag-and-drop editor your team will use — built for speed and precision.</p>
+              <h2 className="text-2xl font-semibold text-on-surface mb-4">
+                Build the full campaign from one workspace
+              </h2>
+
+              <p className="text-sm text-on-surface-variant max-w-xl mx-auto">
+                Create pages, adjust content, preview each step, and publish without bouncing between separate tools.
+              </p>
             </div>
 
             {/* Faithful replica of BuilderClient / Puck editor chrome */}
@@ -104,11 +108,10 @@ export default async function RootPage() {
                     ].map((pg) => (
                       <div
                         key={pg.label}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
-                          pg.active
-                            ? "bg-primary/10 border-primary/30 text-primary"
-                            : "bg-white border-outline-variant text-on-surface-variant hover:border-primary/30"
-                        }`}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium border transition-colors cursor-pointer ${pg.active
+                          ? "bg-primary/10 border-primary/30 text-primary"
+                          : "bg-white border-outline-variant text-on-surface-variant hover:border-primary/30"
+                          }`}
                       >
                         {pg.entry && <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />}
                         {pg.label}
