@@ -21,11 +21,10 @@ export default async function RootPage() {
       <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
         <div className="flex justify-between items-center h-14 px-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-8">
-            <span className="text-xl font-bold text-primary">CampaignPro</span>
+            <span className="text-xl font-bold text-primary">Primitive</span>
             <div className="hidden md:flex gap-6">
               <a className="text-sm text-primary border-b-2 border-primary pb-1 transition-colors" href="#features">Features</a>
               <a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#editor">Editor</a>
-              <a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#pricing">Pricing</a>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -43,22 +42,18 @@ export default async function RootPage() {
         {/* Hero */}
         <section className="relative px-4 pt-16 pb-24 overflow-hidden">
           <div className="max-w-7xl mx-auto text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-container rounded-full text-primary mb-8 border border-outline-variant/30">
-              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>verified</span>
-              <span className="text-[11px] font-semibold">Now with AI-Powered Optimization</span>
-            </div>
             <h1 className="text-5xl md:text-[56px] md:leading-[64px] font-extrabold text-on-surface mb-6 tracking-tight max-w-4xl mx-auto">
-              Launch Professional Campaigns in Minutes with Templates
+              Build, publish, and track multi-step marketing campaigns
             </h1>
             <p className="text-base text-on-surface-variant mb-10 max-w-2xl mx-auto leading-relaxed">
-              Stop starting from scratch. Choose from hundreds of high-converting templates designed for every industry and launch your next big campaign today.
+              Primitive is a campaign editor for building conditional page flows, targeting audiences, sending email broadcasts, and tracking conversions — all in one place.
             </p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
               <Link href="/signup" className="w-full sm:w-auto text-xs font-semibold bg-primary text-on-primary px-8 py-4 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-95">
-                Start Your Free Trial
+                Create an account
               </Link>
               <a href="#editor" className="w-full sm:w-auto text-xs font-semibold border border-outline-variant text-on-surface px-8 py-4 rounded-xl hover:bg-surface-container transition-all active:scale-95">
-                See the Editor
+                See the editor
               </a>
             </div>
           </div>
@@ -239,15 +234,15 @@ export default async function RootPage() {
         <section id="features" className="py-24 px-4 bg-surface-container-low">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Feature 1 */}
+              {/* Feature 1 — Page builder */}
               <div className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/50 soft-shadow hover:border-primary/30 transition-all">
                 <div className="flex flex-col md:flex-row gap-8 items-center">
                   <div className="flex-1">
                     <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6">
                       <span className="material-symbols-outlined" style={{ fontSize: 28 }}>dashboard_customize</span>
                     </div>
-                    <h3 className="text-xl font-semibold mb-4">Pre-designed Campaign Templates</h3>
-                    <p className="text-sm text-on-surface-variant">Start with professional templates tailored for any industry. Customize layouts, colors, and content in seconds to match your brand perfectly.</p>
+                    <h3 className="text-xl font-semibold mb-4">Drag-and-drop page builder</h3>
+                    <p className="text-sm text-on-surface-variant">Compose campaign pages from reusable blocks — headings, text, buttons, forms, images, and more. Start from a template or build from scratch. Changes save automatically.</p>
                   </div>
                   <div className="flex-1 w-full h-48 bg-slate-100 rounded-xl overflow-hidden relative border border-outline-variant/30">
                     <div className="absolute inset-0 flex items-center justify-center opacity-40">
@@ -258,39 +253,42 @@ export default async function RootPage() {
                   </div>
                 </div>
               </div>
-              {/* Feature 2 */}
+              {/* Feature 2 — Flow engine */}
               <div className="bg-primary text-on-primary p-8 rounded-2xl soft-shadow hover:-translate-y-1 transition-all">
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6">
-                  <span className="material-symbols-outlined" style={{ fontSize: 28 }}>query_stats</span>
+                  <span className="material-symbols-outlined" style={{ fontSize: 28 }}>account_tree</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-4">Real-time Analytics</h3>
-                <p className="text-sm text-white/80">Track performance metrics as they happen. Make data-driven adjustments instantly to maximize your ROI.</p>
+                <h3 className="text-xl font-semibold mb-4">Conditional flow engine</h3>
+                <p className="text-sm text-white/80">Build multi-step flows with branching logic, A/B splits, and action nodes. Routes visitors based on form data, URL params, audience fields, device, geo, and time.</p>
                 <div className="mt-8 flex items-end gap-1 h-12">
                   {[40, 70, 100, 60, 85].map((h, i) => (
                     <div key={i} className={`flex-1 rounded-t ${i === 2 ? "bg-white" : "bg-white/30"}`} style={{ height: `${h}%` }} />
                   ))}
                 </div>
               </div>
-              {/* Feature 3 */}
+              {/* Feature 3 — Email */}
               <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/50 soft-shadow">
                 <div className="w-12 h-12 bg-secondary/10 text-secondary rounded-xl flex items-center justify-center mb-6">
                   <span className="material-symbols-outlined" style={{ fontSize: 28 }}>forward_to_inbox</span>
                 </div>
-                <h3 className="text-base font-semibold mb-4">Integrated Email Blast</h3>
-                <p className="text-sm text-on-surface-variant">Reach your audience instantly with high-deliverability email distribution. Built-in optimization ensures your message lands in the inbox every time.</p>
+                <h3 className="text-base font-semibold mb-4">Email broadcasts</h3>
+                <p className="text-sm text-on-surface-variant">Design emails visually, segment by audience, add merge tags, schedule sends, and track delivery. Includes one-click unsubscribe and test send support.</p>
                 <div className="mt-8 flex gap-2">
-                  <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-[11px] font-semibold">High Deliverability</span>
-                  <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-[11px] font-semibold">Smart Routing</span>
+                  <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-[11px] font-semibold">Audience segmentation</span>
+                  <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-[11px] font-semibold">Merge tags</span>
                 </div>
               </div>
-              {/* Feature 4 */}
+              {/* Feature 4 — Conversions */}
               <div className="md:col-span-2 bg-surface-container-low border border-outline-variant/50 p-8 rounded-2xl">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold mb-4">Instant Campaign Deployment</h3>
-                    <p className="text-sm text-on-surface-variant">Go from template selection to live blast in record time. Our streamlined workflow removes technical hurdles so you can focus on strategy.</p>
+                    <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6">
+                      <span className="material-symbols-outlined" style={{ fontSize: 28 }}>conversion_path</span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-4">Audience targeting & conversion tracking</h3>
+                    <p className="text-sm text-on-surface-variant">Import audience records, filter by segment, and personalize flows per visitor. Track goal-based conversions and export enriched data via signed webhooks.</p>
                     <Link href="/signup" className="mt-6 inline-flex items-center gap-2 text-primary text-xs font-medium hover:gap-3 transition-all">
-                      Get started free <span className="material-symbols-outlined" style={{ fontSize: 18 }}>bolt</span>
+                      Get started <span className="material-symbols-outlined" style={{ fontSize: 18 }}>arrow_forward</span>
                     </Link>
                   </div>
                   <div className="flex-1 w-full flex justify-center">
@@ -305,20 +303,19 @@ export default async function RootPage() {
         </section>
 
         {/* Final CTA */}
-        <section id="pricing" className="py-24 px-4">
+        <section className="py-24 px-4">
           <div className="max-w-4xl mx-auto text-center bg-surface-container rounded-[2rem] p-12 md:p-20 border border-outline-variant/30 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
-            <h2 className="text-3xl font-bold mb-6 text-on-surface">Ready to boost your marketing performance?</h2>
-            <p className="text-base text-on-surface-variant mb-10 max-w-xl mx-auto">Join 15,000+ teams who scale their marketing impact with CampaignPro's precision tools.</p>
+            <h2 className="text-3xl font-bold mb-6 text-on-surface">Start building your first campaign</h2>
+            <p className="text-base text-on-surface-variant mb-10 max-w-xl mx-auto">Create an account to access the editor, set up your organization, and publish your first campaign.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/signup" className="bg-primary text-on-primary px-10 py-5 rounded-xl text-base font-semibold hover:shadow-xl transition-all">
-                Start Free Trial Now
+                Create an account
               </Link>
               <Link href="/login" className="bg-white border border-outline-variant text-on-surface px-10 py-5 rounded-xl text-base font-semibold hover:bg-slate-50 transition-all">
-                Sign In
+                Sign in
               </Link>
             </div>
-            <p className="mt-6 text-xs text-on-surface-variant/70">No credit card required. 14-day full access.</p>
           </div>
         </section>
       </main>
@@ -326,40 +323,33 @@ export default async function RootPage() {
       {/* Footer */}
       <footer className="bg-surface-container border-t border-outline-variant/20">
         <div className="max-w-7xl mx-auto py-12 px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             <div>
-              <span className="text-base font-bold text-on-surface block mb-4">CampaignPro</span>
-              <p className="text-sm text-on-surface-variant">Precision marketing tools for high-performance teams worldwide.</p>
+              <span className="text-base font-bold text-on-surface block mb-4">Primitive</span>
+              <p className="text-sm text-on-surface-variant">A platform for building, theming, and publishing multi-step marketing campaigns.</p>
             </div>
             <div>
               <h4 className="text-xs font-bold text-on-surface uppercase mb-6">Product</h4>
               <ul className="space-y-4">
-                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#editor">Editor</a></li>
-                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#features">Analytics</a></li>
-                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#features">Features</a></li>
-                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#pricing">Pricing</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-on-surface uppercase mb-6">Get Started</h4>
-              <ul className="space-y-4">
-                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/signup">Create Free Account</Link></li>
-                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/login">Sign In</Link></li>
-                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/forgot-password">Forgot Password</Link></li>
+                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#editor">Page editor</a></li>
+                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#features">Campaign flows</a></li>
+                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#features">Email broadcasts</a></li>
+                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#features">Audience & conversions</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-xs font-bold text-on-surface uppercase mb-6">Account</h4>
               <ul className="space-y-4">
-                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/login">Sign In</Link></li>
-                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/signup">Create Account</Link></li>
+                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/signup">Create account</Link></li>
+                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/login">Sign in</Link></li>
+                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/forgot-password">Forgot password</Link></li>
               </ul>
             </div>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 py-8 border-t border-outline-variant/10">
-            <p className="text-xs text-on-surface-variant/70">© 2025 CampaignPro. All rights reserved.</p>
+            <p className="text-xs text-on-surface-variant/70">© 2025 Primitive. All rights reserved.</p>
             <div className="flex gap-6">
-              <a className="text-xs text-on-surface-variant/70 hover:text-on-surface transition-colors" href="mailto:support@campaignpro.com">Contact Support</a>
+              <a className="text-xs text-on-surface-variant/70 hover:text-on-surface transition-colors" href="mailto:support@primitive.com">Contact Support</a>
             </div>
           </div>
         </div>
