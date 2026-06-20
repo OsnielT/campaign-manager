@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
+import { Analytics } from "@vercel/analytics/next"
 export const metadata: Metadata = {
   title: { default: "Stemflow", template: "%s | Stemflow" },
   description: "Build, publish, and track multi-step marketing campaigns. Drag-and-drop page builder, conditional flow engine, email broadcasts, and conversion tracking — all in one place.",
@@ -35,6 +35,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <Analytics />
       <body suppressHydrationWarning>{children}</body>
     </html>
   );
