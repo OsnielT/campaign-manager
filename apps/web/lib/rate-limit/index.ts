@@ -1,7 +1,15 @@
 import { NextRequest } from "next/server";
 
-const hasUpstash =
-  !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN;
+// Vercel's Upstash marketplace integration injects KV_REST_API_URL/KV_REST_API_TOKEN,
+// while a direct Upstash setup uses UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN.
+// Accept either so the same code works in both environments. (Note: the Ratelimit
+// SDK needs the REST endpoint + token, NOT the redis:// REDIS_URL connection string.)
+const REDIS_REST_URL =
+  process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+const REDIS_REST_TOKEN =
+  process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
+
+const hasUpstash = !!REDIS_REST_URL && !!REDIS_REST_TOKEN;
 const isProd = process.env.NODE_ENV === "production";
 
 type RatelimitLike = { limit: (id: string) => Promise<{ success: boolean; remaining: number; reset: number }> };
@@ -20,8 +28,9 @@ const failClosed: RatelimitLike = {
   limit: async () => {
     if (!warnedMissingUpstash) {
       console.error(
-        "[rate-limit] FATAL: UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN are not " +
-          "set in production. Rate-limited endpoints are denying traffic until configured."
+        "[rate-limit] FATAL: Redis REST credentials are not set in production " +
+          "(expected UPSTASH_REDIS_REST_URL/TOKEN or KV_REST_API_URL/TOKEN). " +
+          "Rate-limited endpoints are denying traffic until configured."
       );
       warnedMissingUpstash = true;
     }
@@ -43,8 +52,8 @@ function makeLimiter(requests: number, window: `${number} ${"s" | "m" | "h" | "d
         ]);
         cached = new Ratelimit({
           redis: new Redis({
-            url: process.env.UPSTASH_REDIS_REST_URL!,
-            token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+            url: REDIS_REST_URL!,
+            token: REDIS_REST_TOKEN!,
           }),
           limiter: Ratelimit.slidingWindow(requests, window),
           analytics: false,
