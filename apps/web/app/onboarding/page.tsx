@@ -3,6 +3,7 @@
 import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import StemflowLogo from "@/components/branding/StemflowLogo";
 
 type Step = "org" | "plan" | "campaign" | "ready";
 type PlanId = "free" | "pro" | "enterprise";
@@ -182,8 +183,7 @@ export default function OnboardingPage() {
       <div style={card}>
         {/* Logo */}
         <div style={logoRow}>
-          <span style={logoMark} />
-          <span style={logoLabel}>Primitive</span>
+          <StemflowLogo width={130} />
         </div>
 
         {/* Step progress */}
@@ -390,11 +390,6 @@ const card: React.CSSProperties = {
   boxShadow: "var(--shadow)",
 };
 const logoRow: React.CSSProperties = { display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" };
-const logoMark: React.CSSProperties = {
-  width: "26px", height: "26px", borderRadius: "6px",
-  background: "linear-gradient(135deg, #7c5af3, #a78bfa)", display: "inline-block",
-};
-const logoLabel: React.CSSProperties = { fontSize: "16px", fontWeight: "600", color: "var(--text-primary)", letterSpacing: "-0.3px" };
 const stepBar: React.CSSProperties = { display: "flex", alignItems: "center", marginBottom: "28px", flexWrap: "wrap", gap: 4 };
 const heading: React.CSSProperties = { fontSize: "20px", fontWeight: "600", color: "var(--text-primary)", letterSpacing: "-0.3px", marginBottom: "8px" };
 const sub: React.CSSProperties = { fontSize: "14px", color: "var(--text-secondary)", marginBottom: "24px" };
