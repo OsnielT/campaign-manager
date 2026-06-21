@@ -4,9 +4,11 @@ import { getSession } from "@/lib/auth/session";
 import type { Metadata } from "next";
 import "./landing.css";
 import StemflowLogo from "@/components/branding/StemflowLogo";
+
 export const metadata: Metadata = {
   title: "Stemflow — Multi-step campaign builder",
-  description: "Build conditional page flows, send email broadcasts, target audiences, and track conversions. Stemflow is the campaign editor for marketing teams.",
+  description:
+    "Build conditional page flows, send email broadcasts, target audiences, and track conversions. Stemflow is the campaign editor for marketing teams.",
   openGraph: {
     title: "Stemflow — Multi-step campaign builder",
     description: "Build conditional page flows, send email broadcasts, target audiences, and track conversions.",
@@ -19,6 +21,45 @@ export const metadata: Metadata = {
   },
 };
 
+/* ── tiny inline icon set (stroke, editorial). All decorative — paired with
+   visible text labels, so hidden from assistive tech. ─────────────────────── */
+const svgBase = { "aria-hidden": true, focusable: false } as const;
+const I = {
+  arrow: (
+    <svg {...svgBase} className="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+  ),
+  builder: (
+    <svg {...svgBase} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="4" rx="1.5" /><rect x="14" y="11" width="7" height="10" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /></svg>
+  ),
+  flow: (
+    <svg {...svgBase} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="5" cy="12" r="2.4" /><circle cx="19" cy="5" r="2.4" /><circle cx="19" cy="19" r="2.4" /><path d="M7.2 11l9.6-4.8M7.2 13l9.6 4.8" /></svg>
+  ),
+  mail: (
+    <svg {...svgBase} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3.5 7l8.5 6 8.5-6" /></svg>
+  ),
+  target: (
+    <svg {...svgBase} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8.2" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="0.6" fill="currentColor" /></svg>
+  ),
+  check: (
+    <svg {...svgBase} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l4.5 4.5L19 7" /></svg>
+  ),
+  eye: (
+    <svg {...svgBase} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="2.6" /></svg>
+  ),
+  send: (
+    <svg {...svgBase} width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z" /></svg>
+  ),
+};
+
+const PALETTE: { label: string; icon: keyof typeof I }[] = [
+  { label: "Heading", icon: "builder" },
+  { label: "Text Block", icon: "builder" },
+  { label: "Button", icon: "target" },
+  { label: "Image", icon: "builder" },
+  { label: "Form Field", icon: "mail" },
+  { label: "Flow Branch", icon: "flow" },
+];
+
 export default async function RootPage() {
   const session = await getSession();
   if (session.userId) {
@@ -26,353 +67,337 @@ export default async function RootPage() {
   }
 
   return (
-    <div className="scroll-smooth bg-surface text-on-surface font-sans">
-      {/* Fonts */}
-      {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
-      {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" />
+    <div className="lp">
+      <a href="#main" className="lp-skip">Skip to content</a>
+      <div className="lp-atmos" aria-hidden />
+      <div className="lp-grain" aria-hidden />
 
-      {/* Top Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
-        <div className="flex justify-between items-center h-14 px-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-8">
-            <StemflowLogo />
-            <div className="hidden md:flex gap-6">
-              <a className="text-sm text-primary border-b-2 border-primary pb-1 transition-colors" href="#features">Features</a>
-              <a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#editor">Editor</a>
+      {/* ── Nav ─────────────────────────────────────────────────────────── */}
+      <nav className="lp-nav" aria-label="Primary">
+        <div className="lp-nav-inner">
+          <div className="lp-nav-left">
+            <StemflowLogo width={118} />
+            <div className="lp-nav-links">
+              <a className="lp-nav-link" href="#flow">/ flow</a>
+              <a className="lp-nav-link" href="#features">/ features</a>
+              <a className="lp-nav-link" href="#editor">/ editor</a>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-xs font-medium text-on-surface-variant hover:text-primary px-4 py-2 transition-all">
-              Sign In
-            </Link>
-            <Link href="/signup" className="text-xs font-semibold bg-primary text-on-primary px-5 py-2.5 rounded-lg hover:shadow-lg transition-all active:scale-95">
-              Get Started
-            </Link>
+          <div className="lp-nav-right">
+            <Link href="/login" className="lp-signin">Sign in</Link>
+            <Link href="/signup" className="lp-btn lp-btn--sm">Get started {I.arrow}</Link>
           </div>
         </div>
       </nav>
 
-      <main className="pt-20">
-        {/* Hero */}
-        <section className="relative px-4 pt-16 pb-24 overflow-hidden">
-          <div className="max-w-7xl mx-auto text-center relative z-10">
-            <h1 className="text-5xl md:text-[56px] md:leading-[64px] font-extrabold text-on-surface mb-6 tracking-tight max-w-4xl mx-auto">
-              Launch smarter campaigns without stitching tools together
-            </h1>
-            <p className="text-base text-on-surface-variant mb-10 max-w-2xl mx-auto leading-relaxed">
-              Stemflow gives marketing teams one place to build campaign pages, route visitors through conditional flows, send targeted emails, and measure what converts.            </p>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-              <Link href="/signup" className="w-full sm:w-auto text-xs font-semibold bg-primary text-on-primary px-8 py-4 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-95">
-                Start Building
-              </Link>
-              <a href="#editor" className="w-full sm:w-auto text-xs font-semibold border border-outline-variant text-on-surface px-8 py-4 rounded-xl hover:bg-surface-container transition-all active:scale-95">
-                Preview the workspace
-              </a>
+      <div className="lp-wrap">
+       <main id="main">
+        {/* ── Hero ──────────────────────────────────────────────────────── */}
+        <header className="lp-hero">
+          <div className="lp-hero-grid" aria-hidden />
+          <div className="lp-shell">
+            <div className="lp-hero-inner">
+              <div className="lp-rise d1"><span className="lp-badge"><span className="dot" /> One workspace · pages · flows · email · audiences</span></div>
+              <h1 className="lp-h1 lp-rise d2">
+                Campaigns that <span className="ital grad">branch,</span> adapt, and convert
+              </h1>
+              <p className="lp-lede lp-rise d3">
+                Stemflow is one canvas for marketing teams to build campaign pages, route every
+                visitor through conditional flows, send targeted email, and measure exactly what
+                converts — no stitching tools together.
+              </p>
+              <div className="lp-actions lp-rise d4">
+                <Link href="/signup" className="lp-btn lp-btn--grad">Start building {I.arrow}</Link>
+                <a href="#editor" className="lp-btn lp-btn--ghost">See the workspace</a>
+              </div>
+              <div className="lp-trust lp-rise d5">
+                <span><b>Drag-and-drop</b> builder</span>
+                <span><b>A/B</b> split flows</span>
+                <span><b>Signed</b> conversion webhooks</span>
+              </div>
+            </div>
+
+            {/* Animated flow diagram — the actual product */}
+            <div id="flow" className="lp-flow lp-rise d6">
+              <div className="lp-flow-bar">
+                <span className="tl" /><span className="tl" /><span className="tl" />
+                <span className="crumb">flow · <b>Summer Launch 2024</b> — routing by device</span>
+              </div>
+              <div className="lp-flow-stage">
+                <svg className="lp-flow-svg" viewBox="0 0 1000 360" role="img" aria-label="Conditional campaign flow: an entry page branches by device into a mobile offer and a desktop offer, both leading to a converted signup goal.">
+                  <defs>
+                    <linearGradient id="flgrad" x1="0" y1="0" x2="1000" y2="0" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#3525cd" /><stop offset="0.5" stopColor="#6d28d9" /><stop offset="1" stopColor="#4f46e5" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* wires */}
+                  <path id="w1" className="fl-wire" d="M174 180 L250 180" />
+                  <path id="w2" className="fl-wire" d="M400 180 C455 180 455 93 510 93" />
+                  <path id="w3" className="fl-wire" d="M400 180 C455 180 455 267 510 267" />
+                  <path id="w4" className="fl-wire" d="M660 93 C730 93 730 180 800 180" />
+                  <path id="w5" className="fl-wire" d="M660 267 C730 267 730 180 800 180" />
+
+                  {/* traveling pulses */}
+                  {[
+                    { id: "#w1", b: "0s" }, { id: "#w2", b: "0.6s" }, { id: "#w3", b: "1.1s" },
+                    { id: "#w4", b: "1.7s" }, { id: "#w5", b: "2.1s" },
+                  ].map((p) => (
+                    <circle key={p.id} className="fl-pulse" r="3.4">
+                      <animateMotion dur="2.4s" begin={p.b} repeatCount="indefinite" rotate="auto">
+                        <mpath href={p.id} />
+                      </animateMotion>
+                    </circle>
+                  ))}
+
+                  {/* branch labels */}
+                  <text className="fl-tag" x="452" y="120" textAnchor="middle">if mobile</text>
+                  <text className="fl-tag" x="452" y="246" textAnchor="middle">else</text>
+
+                  {/* nodes */}
+                  <g>
+                    <rect className="fl-node fl-node--start" x="24" y="153" width="150" height="54" rx="13" />
+                    <text className="fl-label" x="99" y="178" textAnchor="middle">Entry</text>
+                    <text className="fl-sub" x="99" y="195" textAnchor="middle">/ welcome</text>
+                  </g>
+                  <g>
+                    <rect className="fl-node" x="250" y="153" width="150" height="54" rx="13" />
+                    <text className="fl-label" x="325" y="178" textAnchor="middle">Branch</text>
+                    <text className="fl-sub" x="325" y="195" textAnchor="middle">device · geo · utm</text>
+                  </g>
+                  <g>
+                    <rect className="fl-node" x="510" y="66" width="150" height="54" rx="13" />
+                    <text className="fl-label" x="585" y="91" textAnchor="middle">Mobile offer</text>
+                    <text className="fl-sub" x="585" y="108" textAnchor="middle">/ offer-m</text>
+                  </g>
+                  <g>
+                    <rect className="fl-node" x="510" y="240" width="150" height="54" rx="13" />
+                    <text className="fl-label" x="585" y="265" textAnchor="middle">Desktop offer</text>
+                    <text className="fl-sub" x="585" y="282" textAnchor="middle">/ offer-d</text>
+                  </g>
+                  <g>
+                    <rect className="fl-node fl-node--goal" x="800" y="153" width="172" height="54" rx="13" />
+                    <text className="fl-label" x="886" y="178" textAnchor="middle">Converted ✓</text>
+                    <text className="fl-sub" x="886" y="195" textAnchor="middle">goal · signup</text>
+                  </g>
+                </svg>
+              </div>
             </div>
           </div>
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/5 blur-[120px] rounded-full pointer-events-none" />
-        </section>
+        </header>
 
-        {/* Editor Showcase */}
-        <section id="editor" className="py-24 px-4 bg-surface">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-16 text-center">
-              <h2 className="text-2xl font-semibold text-on-surface mb-4">
-                Build the full campaign from one workspace
-              </h2>
-
-              <p className="text-sm text-on-surface-variant max-w-xl mx-auto">
-                Create pages, adjust content, preview each step, and publish without bouncing between separate tools.
-              </p>
+        {/* ── Features (bento) ──────────────────────────────────────────── */}
+        <section id="features" className="lp-section">
+          <div className="lp-shell">
+            <div className="lp-head center lp-rv">
+              <span className="lp-eyebrow">What&apos;s inside</span>
+              <h2 className="lp-h2">Four tools, <span className="ital grad">one</span> canvas</h2>
+              <p className="lp-sub">Everything a campaign needs — from the first page a visitor sees to the conversion you export.</p>
             </div>
 
-            {/* Faithful replica of BuilderClient / Puck editor chrome */}
-            <div className="rounded-2xl border border-outline-variant soft-shadow overflow-hidden bg-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
-              {/* Top bar — mirrors the real BuilderClient header */}
-              <div className="h-12 border-b border-outline-variant flex items-center justify-between px-3 bg-white">
-                <div className="flex items-center gap-3">
-                  <a className="flex items-center gap-1.5 text-xs text-on-surface-variant hover:text-on-surface transition-colors px-2 py-1 rounded hover:bg-slate-100">
-                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>chevron_left</span>
-                    <span className="font-medium">Summer Launch 2024</span>
-                  </a>
-                  <div className="h-4 w-px bg-outline-variant" />
-                  {/* Page nav chips — matches the real pageChips bar */}
-                  <div className="flex items-center gap-1.5">
-                    {[
-                      { label: "Welcome", path: "/", entry: true, active: true },
-                      { label: "Offer", path: "/offer", entry: false, active: false },
-                      { label: "Thank You", path: "/thank-you", entry: false, active: false },
-                    ].map((pg) => (
-                      <div
-                        key={pg.label}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium border transition-colors cursor-pointer ${pg.active
-                          ? "bg-primary/10 border-primary/30 text-primary"
-                          : "bg-white border-outline-variant text-on-surface-variant hover:border-primary/30"
-                          }`}
-                      >
-                        {pg.entry && <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block" />}
-                        {pg.label}
-                        <span className="text-[10px] opacity-50">{pg.path}</span>
-                      </div>
-                    ))}
-                  </div>
+            <div className="lp-bento">
+              {/* page builder — wide */}
+              <article className="lp-card lp-card--wide lp-rv">
+                <div className="lp-ic">{I.builder}</div>
+                <h3>Drag-and-drop page builder</h3>
+                <p>Compose campaign pages from reusable blocks — headings, text, buttons, forms, images. Start from a template or a blank canvas. Every change autosaves.</p>
+                <div className="lp-mini" aria-hidden>
+                  <span className="blk b1" /><span className="blk b2" /><span className="blk b3" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-on-surface-variant/60 px-2 py-1">Saved</span>
-                  <button className="flex items-center gap-1.5 text-[11px] font-medium border border-outline-variant text-on-surface-variant px-3 py-1.5 rounded hover:bg-slate-50 transition-colors">
-                    <span className="material-symbols-outlined" style={{ fontSize: 14 }}>visibility</span>
-                    Preview
-                  </button>
-                  <button className="flex items-center gap-1.5 text-[11px] font-semibold bg-primary text-on-primary px-4 py-1.5 rounded hover:bg-primary-hover transition-colors">
-                    <span className="material-symbols-outlined" style={{ fontSize: 14 }}>send</span>
-                    Publish
-                  </button>
-                </div>
-              </div>
+              </article>
 
-              {/* Puck editor layout: left sidebar + canvas + right inspector */}
-              <div className="flex" style={{ height: 520 }}>
-                {/* Left sidebar — component palette */}
-                <div className="w-56 border-r border-outline-variant bg-[#f8f9fb] flex flex-col">
-                  <div className="px-3 py-2.5 border-b border-outline-variant">
-                    <span className="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant">Components</span>
+              {/* flow engine — tall accent */}
+              <article className="lp-card lp-card--tall lp-card--accent lp-rv">
+                <div className="lp-ic">{I.flow}</div>
+                <h3>Conditional flow engine</h3>
+                <p>Multi-step flows with branching logic, A/B splits, and action nodes. Route on form data, URL params, audience fields, device, geo, and time.</p>
+                <div className="lp-bars" aria-hidden>
+                  <i style={{ height: "42%" }} /><i style={{ height: "70%" }} /><i className="on" style={{ height: "100%" }} /><i style={{ height: "58%" }} /><i style={{ height: "84%" }} /><i style={{ height: "48%" }} />
+                </div>
+              </article>
+
+              {/* email — half */}
+              <article className="lp-card lp-card--half lp-rv">
+                <div className="lp-ic">{I.mail}</div>
+                <h3>Email broadcasts</h3>
+                <p>Design emails visually, segment by audience, add merge tags, schedule sends, and track delivery — with one-click unsubscribe and test sends.</p>
+                <div className="lp-pills">
+                  <span className="lp-pill">audience segments</span>
+                  <span className="lp-pill">merge tags</span>
+                  <span className="lp-pill">scheduling</span>
+                </div>
+              </article>
+
+              {/* audience — half */}
+              <article className="lp-card lp-card--half lp-rv">
+                <div className="lp-ic">{I.target}</div>
+                <h3>Targeting &amp; conversions</h3>
+                <p>Import audience records, personalize flows per visitor, and track goal-based conversions. Export enriched data through HMAC-signed webhooks.</p>
+                <div className="lp-pills">
+                  <span className="lp-pill">record lookup</span>
+                  <span className="lp-pill">goal tracking</span>
+                  <span className="lp-pill">signed export</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Editor peek ───────────────────────────────────────────────── */}
+        <section id="editor" className="lp-section" style={{ paddingTop: 0 }}>
+          <div className="lp-shell">
+            <div className="lp-head lp-rv">
+              <span className="lp-eyebrow">The workspace</span>
+              <h2 className="lp-h2">Build the whole campaign <span className="ital grad">in one place</span></h2>
+              <p className="lp-sub">Pages, content, theming, and preview — without bouncing between tools.</p>
+            </div>
+
+            <div className="lp-editor-wrap lp-rv" role="img" aria-label="Screenshot of the Stemflow page editor: a component palette on the left, the live page canvas in the center, and a properties inspector on the right.">
+             <div aria-hidden>
+              <div className="lp-ed-float f1"><span className="ck">{I.check}</span> autosaved · 2s ago</div>
+              <div className="lp-ed-float f2"><span className="ck">{I.flow}</span> 3 pages · 1 branch</div>
+
+              <div className="lp-editor">
+                <div className="lp-ed-bar">
+                  <div className="l">
+                    <span className="lp-ed-crumb">‹ Summer Launch 2024</span>
+                    <div className="lp-ed-chips">
+                      <span className="lp-ed-chip on"><span className="lp-ed-dot" />Welcome <span className="pt">/</span></span>
+                      <span className="lp-ed-chip">Offer <span className="pt">/offer</span></span>
+                      <span className="lp-ed-chip">Thanks <span className="pt">/thank-you</span></span>
+                    </div>
                   </div>
-                  <div className="flex-1 overflow-y-auto p-2 space-y-1">
-                    {[
-                      { icon: "title", label: "Heading" },
-                      { icon: "format_paragraph", label: "Text Block" },
-                      { icon: "smart_button", label: "Button" },
-                      { icon: "image", label: "Image" },
-                      { icon: "view_agenda", label: "Card" },
-                      { icon: "horizontal_rule", label: "Divider" },
-                      { icon: "input", label: "Form Field" },
-                      { icon: "grid_view", label: "Columns" },
-                    ].map((item) => (
-                      <div
-                        key={item.label}
-                        className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg border border-transparent hover:border-outline-variant hover:bg-white cursor-grab transition-all text-on-surface-variant"
-                      >
-                        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>{item.icon}</span>
-                        <span className="text-xs font-medium">{item.label}</span>
-                      </div>
-                    ))}
+                  <div className="lp-ed-actions">
+                    <span className="lp-ed-btn ghost">{I.eye} Preview</span>
+                    <span className="lp-ed-btn pri">{I.send} Publish</span>
                   </div>
                 </div>
 
-                {/* Canvas */}
-                <div className="flex-1 bg-slate-100 canvas-grid overflow-auto flex items-start justify-center p-8">
-                  <div className="w-full max-w-xl bg-white rounded-lg shadow-lg overflow-hidden">
-                    {/* Selected block highlight */}
-                    <div className="relative border-2 border-primary rounded-t-lg">
-                      <div className="absolute -top-6 left-0 bg-primary text-white text-[10px] font-semibold px-2 py-0.5 rounded-t">
-                        Heading · selected
-                      </div>
-                      <div className="bg-primary px-8 py-10 text-center text-white">
-                        <div className="text-2xl font-bold mb-2">Exclusive Summer Deals</div>
-                        <div className="text-sm opacity-80 mb-5">Limited time offer — don't miss out</div>
-                        <div className="inline-block bg-white text-primary font-semibold text-sm px-6 py-2.5 rounded-full">
-                          Claim Your Offer
+                <div className="lp-ed-body">
+                  {/* palette */}
+                  <aside className="lp-ed-side">
+                    <div className="lp-ed-side-h"><span>Components</span></div>
+                    <div className="lp-ed-list">
+                      {PALETTE.map((p) => (
+                        <div key={p.label} className="lp-ed-item">{I[p.icon]}<span>{p.label}</span></div>
+                      ))}
+                    </div>
+                  </aside>
+
+                  {/* canvas */}
+                  <div className="lp-ed-canvas">
+                    <div className="lp-ed-page">
+                      <div className="lp-ed-sel">
+                        <span className="lp-ed-tag">Hero · selected</span>
+                        <div className="lp-ed-hero">
+                          <div className="t">Exclusive Summer Deals</div>
+                          <div className="s">Limited-time offer — don&apos;t miss out</div>
+                          <span className="b">Claim your offer</span>
                         </div>
                       </div>
-                    </div>
-                    {/* Next block */}
-                    <div className="px-8 py-6 border-b border-slate-100">
-                      <div className="h-3 bg-slate-200 rounded w-3/4 mb-2" />
-                      <div className="h-3 bg-slate-200 rounded w-full mb-2" />
-                      <div className="h-3 bg-slate-200 rounded w-5/6" />
-                    </div>
-                    <div className="px-8 py-5 flex gap-3">
-                      <div className="h-8 bg-primary/10 rounded flex-1" />
-                      <div className="h-8 bg-slate-100 rounded flex-1" />
+                      <div className="lp-ed-rows">
+                        <div className="r w3" /><div className="r" /><div className="r w5" />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Right inspector — mirrors Puck's properties panel */}
-                <div className="w-64 border-l border-outline-variant bg-[#f8f9fb] flex flex-col">
-                  <div className="px-3 py-2.5 border-b border-outline-variant flex items-center justify-between">
-                    <span className="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant">Heading</span>
-                    <span className="text-[10px] text-primary font-medium">1 selected</span>
-                  </div>
-                  <div className="flex-1 p-3 space-y-4 overflow-y-auto">
-                    <div>
-                      <label className="text-[11px] font-semibold text-on-surface-variant block mb-1.5">Text</label>
-                      <div className="w-full bg-white border border-outline-variant rounded px-2.5 py-1.5 text-xs text-on-surface">Exclusive Summer Deals</div>
+                  {/* inspector */}
+                  <aside className="lp-ed-side r">
+                    <div className="lp-ed-side-h"><span>Hero</span><span className="sel">1 selected</span></div>
+                    <div className="lp-ed-field">
+                      <label>Heading</label>
+                      <div className="lp-ed-input">Exclusive Summer Deals</div>
                     </div>
-                    <div>
-                      <label className="text-[11px] font-semibold text-on-surface-variant block mb-1.5">Size</label>
-                      <div className="grid grid-cols-3 gap-1">
-                        {["sm", "md", "lg"].map((s) => (
-                          <div key={s} className={`text-center py-1 rounded text-[11px] font-medium border cursor-pointer ${s === "lg" ? "border-primary bg-primary/5 text-primary" : "border-outline-variant text-on-surface-variant hover:border-primary/40"}`}>{s}</div>
-                        ))}
-                      </div>
+                    <div className="lp-ed-field">
+                      <label>Size</label>
+                      <div className="lp-ed-seg"><span>sm</span><span>md</span><span className="on">lg</span></div>
                     </div>
-                    <div>
-                      <label className="text-[11px] font-semibold text-on-surface-variant block mb-1.5">Alignment</label>
-                      <div className="grid grid-cols-3 gap-1">
-                        {[
-                          { icon: "format_align_left", v: "left" },
-                          { icon: "format_align_center", v: "center" },
-                          { icon: "format_align_right", v: "right" },
-                        ].map((a) => (
-                          <div key={a.v} className={`flex items-center justify-center py-1 rounded border cursor-pointer ${a.v === "center" ? "border-primary bg-primary/5 text-primary" : "border-outline-variant text-on-surface-variant hover:border-primary/40"}`}>
-                            <span className="material-symbols-outlined" style={{ fontSize: 14 }}>{a.icon}</span>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="lp-ed-field">
+                      <label>Alignment</label>
+                      <div className="lp-ed-seg"><span>left</span><span className="on">center</span><span>right</span></div>
                     </div>
-                    <div>
-                      <label className="text-[11px] font-semibold text-on-surface-variant block mb-1.5">Background</label>
-                      <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded border border-outline-variant bg-primary cursor-pointer" />
-                        <span className="text-xs text-on-surface font-mono">#3525CD</span>
-                      </div>
+                    <div className="lp-ed-field">
+                      <label>Background</label>
+                      <div className="lp-ed-swatch"><i /><code>#3525CD</code></div>
                     </div>
-                    <div>
-                      <label className="text-[11px] font-semibold text-on-surface-variant block mb-1.5">Padding</label>
-                      <div className="grid grid-cols-2 gap-1.5">
-                        {[["Top", "40px"], ["Right", "32px"], ["Bottom", "40px"], ["Left", "32px"]].map(([side, val]) => (
-                          <div key={side} className="bg-white border border-outline-variant rounded px-2 py-1">
-                            <div className="text-[9px] text-on-surface-variant/60 uppercase">{side}</div>
-                            <div className="text-xs font-medium text-on-surface">{val}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  </aside>
                 </div>
+              </div>
+             </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── How it works ──────────────────────────────────────────────── */}
+        <section className="lp-section" style={{ paddingTop: 0 }}>
+          <div className="lp-shell">
+            <div className="lp-head lp-rv">
+              <span className="lp-eyebrow">From blank to live</span>
+              <h2 className="lp-h2">Four steps to a <span className="ital grad">published</span> campaign</h2>
+            </div>
+            <div className="lp-steps lp-rv">
+              {[
+                { n: "01", h: "Compose", p: "Drag blocks onto the canvas to build each page of your campaign." },
+                { n: "02", h: "Branch", p: "Wire pages into a flow with conditions, A/B splits, and goals." },
+                { n: "03", h: "Target", p: "Import audiences, personalize content, and segment your sends." },
+                { n: "04", h: "Publish", p: "Go live on your org URL and watch conversions land in real time." },
+              ].map((s) => (
+                <div key={s.n} className="lp-step">
+                  <div className="n" aria-hidden>{s.n}</div>
+                  <h3>{s.h}</h3>
+                  <p>{s.p}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Final CTA ─────────────────────────────────────────────────── */}
+        <section className="lp-section" style={{ paddingTop: 0 }}>
+          <div className="lp-shell">
+            <div className="lp-final lp-rv">
+              <span className="lp-eyebrow" style={{ justifyContent: "center", display: "flex" }}>Start free</span>
+              <h2 style={{ marginTop: 18 }}>Build your first <span className="ital">campaign</span> today</h2>
+              <p>Create an account, set up your organization, and publish your first multi-step campaign in minutes.</p>
+              <div className="lp-actions">
+                <Link href="/signup" className="lp-btn lp-btn--grad">Create your account {I.arrow}</Link>
+                <Link href="/login" className="lp-btn lp-btn--ghost">Sign in</Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Features */}
-        <section id="features" className="py-24 px-4 bg-surface-container-low">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Feature 1 — Page builder */}
-              <div className="md:col-span-2 bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/50 soft-shadow hover:border-primary/30 transition-all">
-                <div className="flex flex-col md:flex-row gap-8 items-center">
-                  <div className="flex-1">
-                    <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6">
-                      <span className="material-symbols-outlined" style={{ fontSize: 28 }}>dashboard_customize</span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-4">Drag-and-drop page builder</h3>
-                    <p className="text-sm text-on-surface-variant">Compose campaign pages from reusable blocks — headings, text, buttons, forms, images, and more. Start from a template or build from scratch. Changes save automatically.</p>
-                  </div>
-                  <div className="flex-1 w-full h-48 bg-slate-100 rounded-xl overflow-hidden relative border border-outline-variant/30">
-                    <div className="absolute inset-0 flex items-center justify-center opacity-40">
-                      <span className="material-symbols-outlined text-primary" style={{ fontSize: 64 }}>grid_view</span>
-                    </div>
-                    <div className="absolute top-4 left-4 w-24 h-12 bg-white rounded shadow-sm border border-outline-variant/50" />
-                    <div className="absolute bottom-4 right-4 w-32 h-16 bg-primary/20 rounded shadow-sm border border-primary/30" />
-                  </div>
-                </div>
-              </div>
-              {/* Feature 2 — Flow engine */}
-              <div className="bg-primary text-on-primary p-8 rounded-2xl soft-shadow hover:-translate-y-1 transition-all">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6">
-                  <span className="material-symbols-outlined" style={{ fontSize: 28 }}>account_tree</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-4">Conditional flow engine</h3>
-                <p className="text-sm text-white/80">Build multi-step flows with branching logic, A/B splits, and action nodes. Routes visitors based on form data, URL params, audience fields, device, geo, and time.</p>
-                <div className="mt-8 flex items-end gap-1 h-12">
-                  {[40, 70, 100, 60, 85].map((h, i) => (
-                    <div key={i} className={`flex-1 rounded-t ${i === 2 ? "bg-white" : "bg-white/30"}`} style={{ height: `${h}%` }} />
-                  ))}
-                </div>
-              </div>
-              {/* Feature 3 — Email */}
-              <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/50 soft-shadow">
-                <div className="w-12 h-12 bg-secondary/10 text-secondary rounded-xl flex items-center justify-center mb-6">
-                  <span className="material-symbols-outlined" style={{ fontSize: 28 }}>forward_to_inbox</span>
-                </div>
-                <h3 className="text-base font-semibold mb-4">Email broadcasts</h3>
-                <p className="text-sm text-on-surface-variant">Design emails visually, segment by audience, add merge tags, schedule sends, and track delivery. Includes one-click unsubscribe and test send support.</p>
-                <div className="mt-8 flex gap-2">
-                  <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-[11px] font-semibold">Audience segmentation</span>
-                  <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-[11px] font-semibold">Merge tags</span>
-                </div>
-              </div>
-              {/* Feature 4 — Conversions */}
-              <div className="md:col-span-2 bg-surface-container-low border border-outline-variant/50 p-8 rounded-2xl">
-                <div className="flex flex-col md:flex-row items-center gap-8">
-                  <div className="flex-1">
-                    <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6">
-                      <span className="material-symbols-outlined" style={{ fontSize: 28 }}>conversion_path</span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-4">Audience targeting & conversion tracking</h3>
-                    <p className="text-sm text-on-surface-variant">Import audience records, filter by segment, and personalize flows per visitor. Track goal-based conversions and export enriched data via signed webhooks.</p>
-                    <Link href="/signup" className="mt-6 inline-flex items-center gap-2 text-primary text-xs font-medium hover:gap-3 transition-all">
-                      Get started <span className="material-symbols-outlined" style={{ fontSize: 18 }}>arrow_forward</span>
-                    </Link>
-                  </div>
-                  <div className="flex-1 w-full flex justify-center">
-                    <div className="relative w-48 h-48 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-primary/20" style={{ fontSize: 48 }}>group</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+       </main>
 
-        {/* Final CTA */}
-        <section className="py-24 px-4">
-          <div className="max-w-4xl mx-auto text-center bg-surface-container rounded-[2rem] p-12 md:p-20 border border-outline-variant/30 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
-            <h2 className="text-3xl font-bold mb-6 text-on-surface">Start building your first campaign</h2>
-            <p className="text-base text-on-surface-variant mb-10 max-w-xl mx-auto">Create an account to access the editor, set up your organization, and publish your first campaign.</p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/signup" className="bg-primary text-on-primary px-10 py-5 rounded-xl text-base font-semibold hover:shadow-xl transition-all">
-                Create an account
-              </Link>
-              <Link href="/login" className="bg-white border border-outline-variant text-on-surface px-10 py-5 rounded-xl text-base font-semibold hover:bg-slate-50 transition-all">
-                Sign in
-              </Link>
+        {/* ── Footer ────────────────────────────────────────────────────── */}
+        <footer className="lp-footer">
+          <div className="lp-shell">
+            <div className="lp-foot-grid">
+              <div>
+                <StemflowLogo width={120} />
+                <p>One canvas for building, theming, and publishing multi-step marketing campaigns.</p>
+              </div>
+              <div className="lp-foot-col">
+                <h3>Product</h3>
+                <a href="#editor">Page editor</a>
+                <a href="#flow">Campaign flows</a>
+                <a href="#features">Email broadcasts</a>
+                <a href="#features">Audience &amp; conversions</a>
+              </div>
+              <div className="lp-foot-col">
+                <h3>Account</h3>
+                <Link href="/signup">Create account</Link>
+                <Link href="/login">Sign in</Link>
+                <Link href="/forgot-password">Forgot password</Link>
+              </div>
+            </div>
+            <div className="lp-foot-bar">
+              <span>© 2025 Stemflow — all rights reserved</span>
+              <a href="mailto:support@stemflow.dev">support@stemflow.dev</a>
             </div>
           </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-surface-container border-t border-outline-variant/20">
-        <div className="max-w-7xl mx-auto py-12 px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-            <div>
-              <span className="text-base font-bold text-on-surface block mb-4">Stemflow</span>
-              <p className="text-sm text-on-surface-variant">A platform for building, theming, and publishing multi-step marketing campaigns.</p>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-on-surface uppercase mb-6">Product</h4>
-              <ul className="space-y-4">
-                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#editor">Page editor</a></li>
-                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#features">Campaign flows</a></li>
-                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#features">Email broadcasts</a></li>
-                <li><a className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="#features">Audience & conversions</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-on-surface uppercase mb-6">Account</h4>
-              <ul className="space-y-4">
-                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/signup">Create account</Link></li>
-                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/login">Sign in</Link></li>
-                <li><Link className="text-sm text-on-surface-variant hover:text-primary transition-colors" href="/forgot-password">Forgot password</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 py-8 border-t border-outline-variant/10">
-            <p className="text-xs text-on-surface-variant/70">© 2025 Stemflow. All rights reserved.</p>
-            <div className="flex gap-6">
-              <a className="text-xs text-on-surface-variant/70 hover:text-on-surface transition-colors" href="mailto:support@stemflow.io">Contact Support</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }
