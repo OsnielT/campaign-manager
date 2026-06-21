@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionFromRequest } from "@/lib/auth/session";
 import { generateCsrfToken, setCsrfCookie, validateCsrfToken } from "@/lib/auth/csrf";
 
-const ADMIN_PATTERN = /^\/(admin)(\/|$)/;
 const PROTECTED_API_PATTERN = /^\/api\//;
 const COMPOSE_PATTERN = /^\/campaigns\/[^/]+\/compose\//;
 const PUBLIC_API_PREFIXES = [
@@ -18,14 +17,16 @@ const CSRF_COOKIE = "primitive_csrf";
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Determine if this route requires auth
-  const isAdminRoute = ADMIN_PATTERN.test(pathname);
+  // Determine if this route requires auth. NOTE: admin *pages* (/dashboard,
+  // /campaigns, …) are not handled here — the (admin) route-group layout
+  // enforces auth server-side via getSession(). This middleware covers
+  // protected APIs and the Puck compose route.
   const isProtectedApi =
     PROTECTED_API_PATTERN.test(pathname) &&
     !PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p));
   const isComposeRoute = COMPOSE_PATTERN.test(pathname);
 
-  if (!isAdminRoute && !isProtectedApi && !isComposeRoute) {
+  if (!isProtectedApi && !isComposeRoute) {
     // Public routes (incl. /api/auth/*) still seed the CSRF cookie when missing,
     // so the first mutating request right after login/signup has a valid token.
     const res = NextResponse.next();
@@ -41,7 +42,8 @@ export async function middleware(req: NextRequest) {
   const session = await getSessionFromRequest(req, res);
 
   if (!session.userId) {
-    if (isAdminRoute) {
+    if (isComposeRoute) {
+      // Page route — send the visitor to login rather than a JSON 401.
       const loginUrl = new URL("/login", req.url);
       loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
@@ -73,7 +75,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/(admin)/:path*",
     "/api/:path*",
     "/campaigns/:slug/compose/:path*",
   ],

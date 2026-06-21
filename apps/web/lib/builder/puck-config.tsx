@@ -29,6 +29,7 @@ import {
   KeyRound,
 } from "lucide-react";
 import { useCampaignTheme, computeCampaignStyles } from "@/lib/builder/campaign-theme-context";
+import { sanitizeRichText } from "@/lib/sanitize";
 import { buildThemeVars, resolveFontFamily } from "@/lib/campaign-engine/theme";
 import { campaignBlockConfigs } from "@/lib/builder/campaign-blocks";
 import {
@@ -1040,7 +1041,7 @@ const RichTextComponent = {
       <div
         className={["primitive-richtext", cn].filter(Boolean).join(" ")}
         style={{ color: "inherit", fontFamily: "inherit", lineHeight: 1.7, ...css, ...extra }}
-        dangerouslySetInnerHTML={{ __html: (content as string) || "" }}
+        dangerouslySetInnerHTML={{ __html: sanitizeRichText((content as string) || "") }}
       />
     );
   },

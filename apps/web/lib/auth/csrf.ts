@@ -18,10 +18,20 @@ export function setCsrfCookie(res: NextResponse, token: string): void {
   });
 }
 
+/** Constant-time string comparison to avoid leaking token bytes via timing. */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
 /** Validates double-submit CSRF token. Returns true if valid. */
 export function validateCsrfToken(req: NextRequest): boolean {
   const cookieToken = req.cookies.get(CSRF_COOKIE)?.value;
   const headerToken = req.headers.get(CSRF_HEADER);
   if (!cookieToken || !headerToken) return false;
-  return cookieToken === headerToken;
+  return timingSafeEqual(cookieToken, headerToken);
 }

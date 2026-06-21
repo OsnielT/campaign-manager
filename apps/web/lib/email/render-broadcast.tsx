@@ -9,6 +9,7 @@ import {
 import { render } from "@react-email/render";
 import { resolveFontFamily, type CampaignTheme } from "@/lib/campaign-engine/theme";
 import type { EmailBlock, EmailDesign } from "@/lib/email/design";
+import { sanitizeRichText } from "@/lib/sanitize";
 
 interface Palette {
   pageBg: string; containerBg: string; text: string; accent: string; border: string; muted: string; font: string;
@@ -65,7 +66,7 @@ function BlockView({ block, p }: { block: EmailBlock; p: Palette }) {
         <Section style={{ padding: "4px 24px" }}>
           <div
             style={{ color: str(props.color, p.text), fontSize: str(props.fontSize, "15px"), lineHeight: 1.6, textAlign: align }}
-            dangerouslySetInnerHTML={{ __html: str(props.html, "") }}
+            dangerouslySetInnerHTML={{ __html: sanitizeRichText(str(props.html, "")) }}
           />
         </Section>
       );

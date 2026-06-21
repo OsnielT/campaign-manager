@@ -16,6 +16,7 @@ import {
   BrandFooter,
   type FeatureListItem,
 } from "@/lib/builder/campaign-blocks";
+import { sanitizeRichText } from "@/lib/sanitize";
 
 // ─── Puck data types ──────────────────────────────────────────────────────────
 
@@ -421,7 +422,7 @@ function renderNode(
           key={id}
           className={["primitive-richtext", cls].filter(Boolean).join(" ")}
           style={{ lineHeight: 1.7, ...style }}
-          dangerouslySetInnerHTML={{ __html: (p.content as string) || "" }}
+          dangerouslySetInnerHTML={{ __html: sanitizeRichText((p.content as string) || "") }}
         />
       );
     }

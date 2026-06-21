@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users, orgMembers } from "@/lib/db/schema";
-import { verifyPassword } from "@/lib/auth/password";
+import { verifyPassword, dummyVerify } from "@/lib/auth/password";
 import { getSession } from "@/lib/auth/session";
 import { generateCsrfToken, setCsrfCookie } from "@/lib/auth/csrf";
 import { rateLimiters, getIp, checkRateLimit } from "@/lib/rate-limit";
@@ -30,7 +30,14 @@ export async function POST(req: NextRequest) {
       where: eq(users.email, email.toLowerCase()),
     });
 
-    const passwordValid = user ? await verifyPassword(password, user.passwordHash) : false;
+    let passwordValid = false;
+    if (user) {
+      passwordValid = await verifyPassword(password, user.passwordHash);
+    } else {
+      // Run a comparable bcrypt comparison so timing doesn't reveal whether the
+      // email exists (user enumeration defense).
+      await dummyVerify(password);
+    }
 
     if (!user || !passwordValid) {
       return NextResponse.json(

@@ -2,16 +2,35 @@ import { NextRequest } from "next/server";
 
 const hasUpstash =
   !!process.env.UPSTASH_REDIS_REST_URL && !!process.env.UPSTASH_REDIS_REST_TOKEN;
+const isProd = process.env.NODE_ENV === "production";
 
 type RatelimitLike = { limit: (id: string) => Promise<{ success: boolean; remaining: number; reset: number }> };
 
-// No-op limiter used when Upstash is not configured (local dev)
+// No-op limiter for local dev when Upstash is not configured.
 const noop: RatelimitLike = {
   limit: async () => ({ success: true, remaining: 999, reset: 0 }),
 };
 
+// In production, Upstash is mandatory: rate limiting guards auth brute-force and
+// public lookup enumeration. If it's missing we must NOT silently allow traffic.
+// Fail closed at request time (not import time, to avoid breaking `next build`)
+// and log loudly so the misconfiguration is obvious.
+let warnedMissingUpstash = false;
+const failClosed: RatelimitLike = {
+  limit: async () => {
+    if (!warnedMissingUpstash) {
+      console.error(
+        "[rate-limit] FATAL: UPSTASH_REDIS_REST_URL/UPSTASH_REDIS_REST_TOKEN are not " +
+          "set in production. Rate-limited endpoints are denying traffic until configured."
+      );
+      warnedMissingUpstash = true;
+    }
+    return { success: false, remaining: 0, reset: 0 };
+  },
+};
+
 function makeLimiter(requests: number, window: `${number} ${"s" | "m" | "h" | "d"}`): RatelimitLike {
-  if (!hasUpstash) return noop;
+  if (!hasUpstash) return isProd ? failClosed : noop;
 
   // Lazy dynamic import so build succeeds without Upstash env vars
   let cached: RatelimitLike | null = null;
@@ -47,13 +66,26 @@ export const rateLimiters = {
   submit: () => makeLimiter(30, "1 m"),
 } as const;
 
-/** Extract a stable IP identifier from a Next.js request */
+/**
+ * Extract a stable client IP for rate-limit keys.
+ *
+ * On Vercel, `x-vercel-forwarded-for` is set by the platform edge and cannot be
+ * spoofed by the client, so we trust it first. `x-forwarded-for` is client-
+ * controllable (an attacker can rotate it to dodge per-IP limits), so we only
+ * fall back to it in non-Vercel/local environments.
+ */
 export function getIp(req: NextRequest): string {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    req.headers.get("x-real-ip") ??
-    "unknown"
-  );
+  const vercelIp = req.headers.get("x-vercel-forwarded-for");
+  if (vercelIp) return vercelIp.split(",")[0]!.trim();
+
+  if (!isProd) {
+    const xff = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    if (xff) return xff;
+    const xri = req.headers.get("x-real-ip");
+    if (xri) return xri;
+  }
+
+  return "unknown";
 }
 
 /** Check a rate limit. Returns true if the request is allowed. */

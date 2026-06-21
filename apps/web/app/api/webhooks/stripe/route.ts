@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { stripe, stripeEnabled } from "@/lib/stripe/client";
 import { handleStripeEvent } from "@/lib/stripe/webhooks";
 
-// Raw body is required for Stripe signature verification
-export const config = { api: { bodyParser: false } };
+// App Router handlers receive the raw body via req.text(), which we use below
+// for Stripe signature verification.
 
 export async function POST(req: NextRequest) {
   if (!stripeEnabled) return NextResponse.json({ error: "Billing not configured" }, { status: 503 });
