@@ -3,6 +3,18 @@
 import React from "react";
 import { DropZone } from "@measured/puck";
 import type { DefaultComponentProps, Fields } from "@measured/puck";
+import {
+  Navigation,
+  Image as HeroIcon,
+  LayoutPanelTop,
+  LayoutGrid,
+  CreditCard,
+  ListChecks,
+  Minus,
+  ListOrdered,
+  CheckCircle2,
+  PanelBottom,
+} from "lucide-react";
 import { useCampaignTheme, computeCampaignStyles } from "@/lib/builder/campaign-theme-context";
 import {
   colorField as colorCssField,
@@ -890,6 +902,7 @@ function renderSlotProp(v: unknown): React.ReactNode {
 export const campaignBlockConfigs = {
   CampaignNav: {
     label: "Campaign Nav",
+    icon: <Navigation size={16} />,
     permissions: { delete: false, duplicate: false },
     fields: {
       _content:          sectionField("Content"),
@@ -941,6 +954,7 @@ export const campaignBlockConfigs = {
 
   Hero: {
     label: "Hero",
+    icon: <HeroIcon size={16} />,
     fields: {
       _content:         sectionField("Content"),
       eyebrow:          slotField("Eyebrow"),
@@ -1009,6 +1023,7 @@ export const campaignBlockConfigs = {
 
   SectionWrap: {
     label: "Section Wrap",
+    icon: <LayoutPanelTop size={16} />,
     fields: {
       _layout:       sectionField("Layout"),
       maxWidth:      dimensionField("Max width"),
@@ -1052,6 +1067,7 @@ export const campaignBlockConfigs = {
 
   TierGrid: {
     label: "Tier Grid",
+    icon: <LayoutGrid size={16} />,
     fields: {
       _layout: sectionField("Layout"),
       columns: {
@@ -1119,6 +1135,7 @@ export const campaignBlockConfigs = {
 
   TierCard: {
     label: "Tier Card",
+    icon: <CreditCard size={16} />,
     fields: {
       _content:       sectionField("Content"),
       heading:        slotField("Heading (title + price)"),
@@ -1191,6 +1208,7 @@ export const campaignBlockConfigs = {
 
   FeatureList: {
     label: "Feature List",
+    icon: <ListChecks size={16} />,
     fields: {
       _content: sectionField("Content"),
       items: {
@@ -1244,6 +1262,7 @@ export const campaignBlockConfigs = {
 
   Divider: {
     label: "Divider",
+    icon: <Minus size={16} />,
     fields: {
       _content:   sectionField("Content"),
       label:      { type: "text" as const, label: "Center label (optional)" },
@@ -1277,6 +1296,7 @@ export const campaignBlockConfigs = {
 
   StepItem: {
     label: "Step Item",
+    icon: <ListOrdered size={16} />,
     fields: {
       _content:    sectionField("Content"),
       title:       slotField("Title"),
@@ -1358,6 +1378,7 @@ export const campaignBlockConfigs = {
 
   SuccessHeader: {
     label: "Success Header",
+    icon: <CheckCircle2 size={16} />,
     fields: {
       _content:        sectionField("Content"),
       headline:        slotField("Headline"),
@@ -1404,6 +1425,7 @@ export const campaignBlockConfigs = {
 
   BrandFooter: {
     label: "Brand Footer",
+    icon: <PanelBottom size={16} />,
     permissions: { delete: false, duplicate: false },
     fields: {
       _content:   sectionField("Content"),

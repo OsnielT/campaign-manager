@@ -10,7 +10,7 @@ import { buildThemeVars, resolveFontFamily, resolveBrand, getHeadingFontGooglePa
 import type { CampaignTheme } from "@/lib/campaign-engine/theme";
 import { CampaignThemeContext } from "@/lib/builder/campaign-theme-context";
 import Link from "next/link";
-import { Eye, Loader2, Palette, Wand2 } from "lucide-react";
+import { Eye, GripVertical, Loader2, Palette, Wand2 } from "lucide-react";
 import type { PageNavItem } from "./page";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -140,6 +140,37 @@ export function BuilderClient({
         <PropagateStyleControl campaignSlug={campaignSlug} />
       </>
     ),
+    // Render each draggable drawer item with its config icon inside the box,
+    // alongside the name. Puck passes the default bordered box as opaque
+    // `children`, so we rebuild the row to place the icon within it.
+    drawerItem: ({ name }) => {
+      const cfg = (puckConfig.components as Record<string, { icon?: React.ReactNode; label?: string }>)[name];
+      return (
+        <div
+          style={{
+            background: "var(--puck-color-white)",
+            cursor: "grab",
+            padding: 12,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            border: "1px var(--puck-color-grey-09) solid",
+            borderRadius: 4,
+            fontSize: "var(--puck-font-size-xxs)",
+          }}
+        >
+          {cfg?.icon && (
+            <span style={{ display: "inline-flex", flexShrink: 0, color: "var(--puck-color-grey-05)" }}>
+              {cfg.icon}
+            </span>
+          )}
+          <span style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            {cfg?.label ?? name}
+          </span>
+          <GripVertical size={16} style={{ flexShrink: 0, color: "var(--puck-color-grey-05)" }} />
+        </div>
+      );
+    },
   }), [campaignSlug]);
 
   return (

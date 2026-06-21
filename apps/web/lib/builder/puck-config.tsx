@@ -11,6 +11,23 @@ import {
   Input,
   Textarea,
 } from "@twinaholic/react";
+import {
+  Square,
+  Layers,
+  Type as TypeIcon,
+  MousePointerClick,
+  CreditCard,
+  Tag,
+  TextCursorInput,
+  AlignLeft,
+  Image as ImageIcon,
+  FileText,
+  ClipboardList,
+  ListChecks,
+  Database,
+  ArrowRightCircle,
+  KeyRound,
+} from "lucide-react";
 import { useCampaignTheme, computeCampaignStyles } from "@/lib/builder/campaign-theme-context";
 import { buildThemeVars, resolveFontFamily } from "@/lib/campaign-engine/theme";
 import { campaignBlockConfigs } from "@/lib/builder/campaign-blocks";
@@ -105,6 +122,7 @@ const appearanceField = (options: string[]) => ({
 
 const BoxComponent = {
   label: "Box",
+  icon: <Square size={16} />,
   fields: {
     _appearance: sectionField("Appearance"),
     size: sizeField,
@@ -175,6 +193,7 @@ const BoxComponent = {
 
 const StackComponent = {
   label: "Stack",
+  icon: <Layers size={16} />,
   fields: {
     _appearance: sectionField("Layout"),
     direction: {
@@ -244,6 +263,7 @@ const StackComponent = {
 
 const TextComponent = {
   label: "Text",
+  icon: <TypeIcon size={16} />,
   fields: {
     _content: sectionField("Content"),
     content: { type: "textarea" as const, label: "Content" },
@@ -330,6 +350,7 @@ const TextComponent = {
 
 const ButtonComponent = {
   label: "Button",
+  icon: <MousePointerClick size={16} />,
   fields: {
     _content: sectionField("Content"),
     label: { type: "text" as const, label: "Label" },
@@ -383,6 +404,7 @@ const ButtonComponent = {
 
 const CardComponent = {
   label: "Card",
+  icon: <CreditCard size={16} />,
   fields: {
     _appearance: sectionField("Appearance"),
     size: sizeField,
@@ -440,6 +462,7 @@ const CardComponent = {
 
 const BadgeComponent = {
   label: "Badge",
+  icon: <Tag size={16} />,
   fields: {
     _content: sectionField("Content"),
     content: { type: "text" as const, label: "Label" },
@@ -487,6 +510,7 @@ const BadgeComponent = {
 
 const InputComponent = {
   label: "Input",
+  icon: <TextCursorInput size={16} />,
   fields: {
     label: { type: "text" as const, label: "Label" },
     placeholder: { type: "text" as const, label: "Placeholder" },
@@ -546,6 +570,7 @@ const InputComponent = {
 
 const TextareaComponent = {
   label: "Textarea",
+  icon: <AlignLeft size={16} />,
   fields: {
     label: { type: "text" as const, label: "Label" },
     placeholder: { type: "text" as const, label: "Placeholder" },
@@ -596,6 +621,7 @@ const TextareaComponent = {
 
 const ImageComponent = {
   label: "Image",
+  icon: <ImageIcon size={16} />,
   fields: {
     _source: sectionField("Source"),
     src: imageField("Image"),
@@ -682,6 +708,7 @@ const ImageComponent = {
 
 const CampaignFormComponent = {
   label: "Form",
+  icon: <ClipboardList size={16} />,
   fields: {
     buttonLabel: { type: "text" as const, label: "Submit button label" },
     conversionTrigger: {
@@ -763,6 +790,7 @@ const CampaignFormComponent = {
 
 const CampaignChoiceComponent = {
   label: "Choice",
+  icon: <ListChecks size={16} />,
   fields: {
     fieldKey: { type: "text" as const, label: "Field key" },
     label: { type: "text" as const, label: "Label" },
@@ -818,6 +846,7 @@ const CampaignChoiceComponent = {
 
 const CampaignDataFieldComponent = {
   label: "Data field",
+  icon: <Database size={16} />,
   fields: {
     fieldKey: { type: "text" as const, label: "Audience field key" },
     fallback: { type: "text" as const, label: "Fallback text (no match)" },
@@ -836,6 +865,7 @@ const CampaignDataFieldComponent = {
 
 const CampaignConversionButtonComponent = {
   label: "Conversion button",
+  icon: <ArrowRightCircle size={16} />,
   fields: {
     label: { type: "text" as const, label: "Label" },
     navigateTo: {
@@ -863,6 +893,7 @@ const CampaignConversionButtonComponent = {
 
 const AudienceLookupComponent = {
   label: "Audience lookup",
+  icon: <KeyRound size={16} />,
   fields: {
     label: { type: "text" as const, label: "Label" },
     placeholder: { type: "text" as const, label: "Placeholder" },
@@ -980,6 +1011,7 @@ const rtEditor: React.CSSProperties = { minHeight: 120, padding: "10px 12px", ou
 
 const RichTextComponent = {
   label: "Rich Text",
+  icon: <FileText size={16} />,
   fields: {
     content: {
       type: "custom" as const,
