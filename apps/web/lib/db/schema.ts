@@ -20,6 +20,8 @@ export const users = pgTable("users", {
   passwordHash: text("password_hash").notNull(),
   name: text("name").notNull(),
   emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
+  // Recorded automatically at signup — proof of consent to Terms / Privacy Policy.
+  termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
   // Per-user UI preferences (e.g. dashboard widget visibility + order).
   dashboardPrefs: jsonb("dashboard_prefs"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -54,6 +56,11 @@ export const organizations = pgTable("organizations", {
   plan: text("plan").notNull().default("free"),
   // Org-level brand defaults; campaigns inherit these per field (see resolveBrand).
   branding: jsonb("branding").$type<CampaignTheme>(),
+  // CAN-SPAM compliance: required in broadcast email footers before a campaign can send.
+  legalName: text("legal_name"),
+  postalAddress: text("postal_address"),
+  // Override the "from" display name in broadcast emails (defaults to org name).
+  fromName: text("from_name"),
   stripeCustomerId: text("stripe_customer_id").unique(),
   stripeSubscriptionId: text("stripe_subscription_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

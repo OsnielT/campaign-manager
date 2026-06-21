@@ -1,3 +1,4 @@
+import Link from "next/link";
 import StemflowLogo from "@/components/branding/StemflowLogo";
 import type { Metadata } from "next";
 
@@ -12,6 +13,14 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         {children}
+
+        <div style={legalLinks}>
+          <Link href="/privacy" style={legalLink}>Privacy</Link>
+          <span style={legalDot} aria-hidden>·</span>
+          <Link href="/terms" style={legalLink}>Terms</Link>
+          <span style={legalDot} aria-hidden>·</span>
+          <Link href="/cookies" style={legalLink}>Cookies</Link>
+        </div>
       </div>
     </div>
   );
@@ -41,4 +50,23 @@ const logoWrapper: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   marginBottom: "32px",
+};
+
+const legalLinks: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "8px",
+  marginTop: "24px",
+};
+
+const legalLink: React.CSSProperties = {
+  fontSize: "12px",
+  color: "var(--text-muted)",
+  textDecoration: "none",
+};
+
+const legalDot: React.CSSProperties = {
+  fontSize: "12px",
+  color: "var(--text-muted)",
 };

@@ -50,10 +50,11 @@ export async function POST(req: NextRequest) {
     }
 
     const passwordHash = await hashPassword(password);
-    const devVerifiedAt = process.env.NODE_ENV === "development" ? new Date() : null;
+    const now = new Date();
+    const devVerifiedAt = process.env.NODE_ENV === "development" ? now : null;
     const [user] = await db
       .insert(users)
-      .values({ email: email.toLowerCase(), passwordHash, name, emailVerifiedAt: devVerifiedAt })
+      .values({ email: email.toLowerCase(), passwordHash, name, emailVerifiedAt: devVerifiedAt, termsAcceptedAt: now })
       .returning({ id: users.id, name: users.name });
 
     if (process.env.NODE_ENV !== "development") {
@@ -77,7 +78,7 @@ export async function POST(req: NextRequest) {
         })
       );
 
-      await sendEmail({ to: email, subject: "Verify your Primitive email", html });
+      await sendEmail({ to: email, subject: "Verify your Stemflow email", html });
     }
 
     // Set session

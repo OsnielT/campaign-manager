@@ -390,9 +390,15 @@ export default async function RootPage() {
                 <Link href="/login">Sign in</Link>
                 <Link href="/forgot-password">Forgot password</Link>
               </div>
+              <div className="lp-foot-col">
+                <h3>Legal</h3>
+                <Link href="/privacy">Privacy Policy</Link>
+                <Link href="/terms">Terms of Service</Link>
+                <Link href="/cookies">Cookie Policy</Link>
+              </div>
             </div>
             <div className="lp-foot-bar">
-              <span>© 2025 Stemflow — all rights reserved</span>
+              <span>© {new Date().getFullYear()} Stemflow — all rights reserved</span>
               <a href="mailto:support@stemflow.dev">support@stemflow.dev</a>
             </div>
           </div>

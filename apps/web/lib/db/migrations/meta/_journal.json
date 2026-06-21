@@ -15,6 +15,13 @@
       "when": 1781890677370,
       "tag": "0001_calm_killer_shrike",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782072225765,
+      "tag": "0002_handy_jean_grey",
+      "breakpoints": true
     }
   ]
 }

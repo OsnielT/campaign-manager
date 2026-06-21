@@ -408,37 +408,184 @@ function GettingStartedChecklist({ checklist, onDismiss }: { checklist: Props["c
 }
 
 // ── Styles ──
-const page: React.CSSProperties = { padding: "32px 36px" };
-const header: React.CSSProperties = { display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 };
-const heading: React.CSSProperties = { fontSize: 22, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.4px" };
-const sub: React.CSSProperties = { fontSize: 13, color: "var(--text-secondary)", marginTop: 4 };
-const planBadge: React.CSSProperties = { fontSize: 11, fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase", background: "var(--accent-muted)", color: "var(--accent-hover)", padding: "4px 10px", borderRadius: 99, border: "1px solid var(--accent)" };
-const newCampaignBtn: React.CSSProperties = { display: "inline-flex", alignItems: "center", gap: 6, background: "var(--accent)", color: "var(--text-inverse)", padding: "8px 16px", borderRadius: "var(--radius)", fontSize: 13, fontWeight: 600, textDecoration: "none" };
-const rangeWrap: React.CSSProperties = { display: "inline-flex", background: "var(--bg-raised)", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)", padding: 2 };
-const rangeBtn: React.CSSProperties = { background: "none", border: "none", padding: "5px 10px", fontSize: 12, fontWeight: 500, color: "var(--text-secondary)", cursor: "pointer", borderRadius: "calc(var(--radius-sm) - 2px)" };
-const rangeBtnActive: React.CSSProperties = { ...rangeBtn, background: "var(--bg-surface)", color: "var(--text-primary)", boxShadow: "var(--shadow-sm)" };
-const configToggleBtn: React.CSSProperties = { display: "flex", alignItems: "center", gap: 6, background: "none", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)", padding: "5px 12px", fontSize: 12, color: "var(--text-secondary)", cursor: "pointer" };
-const configPanel: React.CSSProperties = { marginTop: 10, background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "12px 16px", display: "inline-block", minWidth: 260 };
-const configPanelTitle: React.CSSProperties = { fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 10 };
+const page: React.CSSProperties = {
+  padding: "36px 40px",
+  minHeight: "100%",
+  background: "radial-gradient(ellipse at 0% 0%, rgba(99,102,241,0.055) 0%, transparent 55%), var(--bg)",
+};
+const header: React.CSSProperties = { display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 28 };
+const heading: React.CSSProperties = {
+  fontFamily: "var(--font-display)",
+  fontStyle: "italic",
+  fontSize: 34,
+  fontWeight: 600,
+  color: "var(--text-primary)",
+  letterSpacing: "-0.5px",
+  lineHeight: 1.1,
+};
+const sub: React.CSSProperties = {
+  fontSize: 13,
+  color: "var(--text-secondary)",
+  marginTop: 6,
+  letterSpacing: "0",
+};
+const planBadge: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  background: "var(--accent-muted)",
+  color: "var(--accent)",
+  padding: "4px 10px",
+  borderRadius: 99,
+  border: "1px solid color-mix(in srgb, var(--accent) 30%, transparent)",
+};
+const newCampaignBtn: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+  background: "linear-gradient(100deg, #3525cd 0%, #6d28d9 55%, #4f46e5 100%)",
+  color: "#ffffff",
+  padding: "8px 18px",
+  borderRadius: "var(--radius)",
+  fontSize: 13,
+  fontWeight: 600,
+  textDecoration: "none",
+  boxShadow: "0 2px 8px rgba(53,37,205,0.28)",
+  letterSpacing: "-0.01em",
+};
+const rangeWrap: React.CSSProperties = {
+  display: "inline-flex",
+  background: "var(--bg-raised)",
+  border: "1px solid var(--border)",
+  borderRadius: "var(--radius-sm)",
+  padding: 2,
+};
+const rangeBtn: React.CSSProperties = {
+  background: "none",
+  border: "none",
+  padding: "5px 10px",
+  fontSize: 12,
+  fontWeight: 500,
+  color: "var(--text-secondary)",
+  cursor: "pointer",
+  borderRadius: "calc(var(--radius-sm) - 2px)",
+  letterSpacing: "0",
+};
+const rangeBtnActive: React.CSSProperties = {
+  ...rangeBtn,
+  background: "var(--bg-surface)",
+  color: "var(--text-primary)",
+  boxShadow: "var(--shadow-sm)",
+  fontWeight: 600,
+};
+const configToggleBtn: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 6,
+  background: "none",
+  border: "1px solid var(--border)",
+  borderRadius: "var(--radius-sm)",
+  padding: "5px 12px",
+  fontSize: 12,
+  color: "var(--text-secondary)",
+  cursor: "pointer",
+  letterSpacing: "0",
+};
+const configPanel: React.CSSProperties = {
+  marginTop: 10,
+  background: "var(--bg-surface)",
+  border: "1px solid var(--border)",
+  borderRadius: "var(--radius)",
+  padding: "12px 16px",
+  display: "inline-block",
+  minWidth: 260,
+  boxShadow: "var(--shadow)",
+};
+const configPanelTitle: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: "var(--text-muted)",
+  marginBottom: 10,
+};
 const configRow: React.CSSProperties = { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "3px 0" };
 const configLabel: React.CSSProperties = { display: "flex", alignItems: "center", fontSize: 13, color: "var(--text-primary)", cursor: "pointer" };
 const iconBtn: React.CSSProperties = { background: "none", border: "1px solid var(--border)", borderRadius: 5, padding: "2px 4px", color: "var(--text-secondary)", cursor: "pointer", display: "flex" };
 const kpiGrid: React.CSSProperties = { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 };
-const card: React.CSSProperties = { background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "18px 20px", boxShadow: "var(--shadow-sm)" };
-const cardLabel: React.CSSProperties = { fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: 8 };
-const cardValue: React.CSSProperties = { fontSize: 30, fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.5px", lineHeight: 1 };
+const card: React.CSSProperties = {
+  background: "var(--bg-surface)",
+  border: "1px solid var(--border)",
+  borderRadius: "var(--radius-lg)",
+  padding: "20px 22px",
+  boxShadow: "var(--shadow-sm)",
+};
+const cardLabel: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: "var(--text-muted)",
+  marginBottom: 8,
+};
+const cardValue: React.CSSProperties = {
+  fontFamily: "var(--font-display)",
+  fontSize: 34,
+  fontWeight: 600,
+  color: "var(--text-primary)",
+  letterSpacing: "-1px",
+  lineHeight: 1,
+};
 const cardSub: React.CSSProperties = { fontSize: 12, color: "var(--text-muted)", marginTop: 6 };
-const sectionHeading: React.CSSProperties = { fontSize: 15, fontWeight: 600, color: "var(--text-primary)", letterSpacing: "-0.2px" };
-const viewAllLink: React.CSSProperties = { fontSize: 12, color: "var(--accent-hover)", fontWeight: 500, textDecoration: "none" };
-const tableWrap: React.CSSProperties = { background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden", boxShadow: "var(--shadow-sm)" };
+const sectionHeading: React.CSSProperties = {
+  fontFamily: "var(--font-display)",
+  fontStyle: "italic",
+  fontSize: 18,
+  fontWeight: 600,
+  color: "var(--text-primary)",
+  letterSpacing: "-0.3px",
+};
+const viewAllLink: React.CSSProperties = { fontSize: 12, color: "var(--accent-hover)", fontWeight: 600, textDecoration: "none" };
+const tableWrap: React.CSSProperties = {
+  background: "var(--bg-surface)",
+  border: "1px solid var(--border)",
+  borderRadius: "var(--radius-lg)",
+  overflow: "hidden",
+  boxShadow: "var(--shadow-sm)",
+};
 const table: React.CSSProperties = { width: "100%", borderCollapse: "collapse" };
-const th: React.CSSProperties = { padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--text-muted)", borderBottom: "1px solid var(--border)", background: "var(--bg-raised)", whiteSpace: "nowrap" };
+const th: React.CSSProperties = {
+  padding: "10px 16px",
+  textAlign: "left",
+  fontSize: 10,
+  fontWeight: 700,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: "var(--text-muted)",
+  borderBottom: "1px solid var(--border)",
+  background: "var(--bg-raised)",
+  whiteSpace: "nowrap",
+};
 const tr: React.CSSProperties = { borderBottom: "1px solid var(--border-subtle)" };
 const td: React.CSSProperties = { padding: "13px 16px", fontSize: 13, color: "var(--text-primary)", verticalAlign: "middle" };
-const nameLink: React.CSSProperties = { fontWeight: 500, color: "var(--text-primary)", textDecoration: "none" };
-const slugLabel: React.CSSProperties = { marginLeft: 8, fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono, monospace)" };
-const statusPill: React.CSSProperties = { display: "inline-block", padding: "2px 8px", borderRadius: 99, fontSize: 11, fontWeight: 600, letterSpacing: "0.04em" };
-const editLink: React.CSSProperties = { fontSize: 12, color: "var(--accent-hover)", fontWeight: 500, textDecoration: "none" };
+const nameLink: React.CSSProperties = { fontWeight: 600, color: "var(--text-primary)", textDecoration: "none" };
+const slugLabel: React.CSSProperties = { marginLeft: 8, fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono)" };
+const statusPill: React.CSSProperties = { display: "inline-block", padding: "2px 9px", borderRadius: 99, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em" };
+const editLink: React.CSSProperties = { fontSize: 12, color: "var(--accent-hover)", fontWeight: 600, textDecoration: "none" };
 const attentionRow: React.CSSProperties = { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", textDecoration: "none" };
-const emptyState: React.CSSProperties = { textAlign: "center", padding: "52px 24px", background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: "var(--radius-lg)" };
-const checklistCard: React.CSSProperties = { background: "var(--bg-surface)", border: "1px solid var(--accent)", borderRadius: "var(--radius)", padding: "18px 20px", marginBottom: 20, boxShadow: "0 0 0 3px var(--accent-muted)" };
+const emptyState: React.CSSProperties = {
+  textAlign: "center",
+  padding: "56px 24px",
+  background: "var(--bg-surface)",
+  border: "1px solid var(--border)",
+  borderRadius: "var(--radius-lg)",
+};
+const checklistCard: React.CSSProperties = {
+  background: "var(--bg-surface)",
+  border: "1px solid color-mix(in srgb, var(--accent) 35%, transparent)",
+  borderRadius: "var(--radius-lg)",
+  padding: "20px 22px",
+  marginBottom: 24,
+  boxShadow: "0 0 0 3px var(--accent-muted)",
+};

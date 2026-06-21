@@ -34,6 +34,14 @@ export default function SignupPage() {
     }
   }
 
+  const consentText: React.CSSProperties = {
+    fontSize: "11px",
+    color: "var(--text-muted)",
+    textAlign: "center",
+    marginTop: "10px",
+    lineHeight: 1.5,
+  };
+
   return (
     <>
       <h1 style={s.heading}>Create account</h1>
@@ -76,6 +84,12 @@ export default function SignupPage() {
         <button style={s.button} type="submit" disabled={loading}>
           {loading ? "Creating account…" : "Create account"}
         </button>
+        <p style={consentText}>
+          By creating an account you agree to our{" "}
+          <Link href="/terms" style={s.link}>Terms of Service</Link>{" "}
+          and{" "}
+          <Link href="/privacy" style={s.link}>Privacy Policy</Link>.
+        </p>
       </form>
       <p style={s.footer}>
         Already have an account?{" "}

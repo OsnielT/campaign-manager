@@ -9,7 +9,7 @@ function getResend(): Resend {
   return resend;
 }
 
-export const EMAIL_FROM = process.env.EMAIL_FROM ?? "noreply@primitive.io";
+export const EMAIL_FROM = process.env.EMAIL_FROM ?? "noreply@stemflow.dev";
 
 /** True when Resend is configured — otherwise emails are only logged to the console. */
 export function emailConfigured(): boolean {

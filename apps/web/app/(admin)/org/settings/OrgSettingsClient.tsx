@@ -12,6 +12,9 @@ interface Org {
   plan: string;
   stripeCustomerId: string | null;
   branding: CampaignTheme | null;
+  legalName: string | null;
+  postalAddress: string | null;
+  fromName: string | null;
 }
 
 function getCsrf() {
@@ -30,12 +33,18 @@ const PLAN_LABELS: Record<string, string> = {
 };
 
 export function OrgSettingsClient({ org, isOwner }: { org: Org; isOwner: boolean }) {
-  const router = useRouter();
   const [name, setName] = useState(org.name);
+  const [legalName, setLegalName] = useState(org.legalName ?? "");
+  const [postalAddress, setPostalAddress] = useState(org.postalAddress ?? "");
+  const [fromName, setFromName] = useState(org.fromName ?? "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const router = useRouter();
 
   // Org branding — debounced auto-save.
   const [branding, setBranding] = useState<CampaignTheme>(org.branding ?? NEUTRAL_LIGHT_BRAND);
@@ -90,7 +99,12 @@ export function OrgSettingsClient({ org, isOwner }: { org: Org; isOwner: boolean
       const res = await fetch(`/api/orgs/${org.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf() },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({
+          name,
+          legalName: legalName || null,
+          postalAddress: postalAddress || null,
+          fromName: fromName || null,
+        }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -102,6 +116,26 @@ export function OrgSettingsClient({ org, isOwner }: { org: Org; isOwner: boolean
       router.refresh();
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDeleteOrg() {
+    if (deleteConfirm !== org.slug) return;
+    setDeleteLoading(true);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/orgs/${org.id}`, {
+        method: "DELETE",
+        headers: { "x-csrf-token": getCsrf() },
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setDeleteError(data.error ?? "Failed to delete organization");
+        return;
+      }
+      router.push("/dashboard");
+    } finally {
+      setDeleteLoading(false);
     }
   }
 
@@ -174,6 +208,58 @@ export function OrgSettingsClient({ org, isOwner }: { org: Org; isOwner: boolean
         </form>
       </div>
 
+      {/* Email compliance — CAN-SPAM */}
+      <div style={card}>
+        <h2 style={cardHeading}>Email compliance</h2>
+        <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 16, lineHeight: 1.5 }}>
+          Required for sending broadcast emails. CAN-SPAM law mandates your legal name and a valid
+          postal mailing address in every marketing email you send.
+        </p>
+        <form onSubmit={handleSave} style={form}>
+          <label style={labelStyle}>
+            Legal entity name
+            <input
+              style={inputStyle}
+              type="text"
+              placeholder="e.g. Acme Corp, Inc."
+              value={legalName}
+              disabled={!isOwner}
+              onChange={(e) => setLegalName(e.target.value)}
+            />
+          </label>
+          <label style={labelStyle}>
+            Postal mailing address
+            <textarea
+              style={{ ...inputStyle, resize: "vertical", minHeight: 72 }}
+              placeholder={"e.g. 123 Main St, Suite 100\nMiami, FL 33101, USA"}
+              value={postalAddress}
+              disabled={!isOwner}
+              onChange={(e) => setPostalAddress(e.target.value)}
+            />
+            <span style={hint}>Shown in the footer of every broadcast email you send.</span>
+          </label>
+          <label style={labelStyle}>
+            Email &ldquo;From&rdquo; display name
+            <input
+              style={inputStyle}
+              type="text"
+              placeholder={org.name}
+              value={fromName}
+              disabled={!isOwner}
+              onChange={(e) => setFromName(e.target.value)}
+            />
+            <span style={hint}>Defaults to organization name if left blank.</span>
+          </label>
+          {isOwner && (
+            <div style={actions}>
+              <button style={saveBtn} type="submit" disabled={saving}>
+                {saving ? "Saving…" : "Save"}
+              </button>
+            </div>
+          )}
+        </form>
+      </div>
+
       {/* Branding — the org default brand campaigns inherit */}
       <div style={card}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
@@ -189,6 +275,40 @@ export function OrgSettingsClient({ org, isOwner }: { org: Org; isOwner: boolean
           <p style={hint}>Only owners can edit branding.</p>
         )}
       </div>
+
+      {/* Danger Zone */}
+      {isOwner && (
+        <div style={{ ...card, borderColor: "var(--danger, #ef4444)" }}>
+          <h2 style={{ ...cardHeading, color: "var(--danger, #ef4444)" }}>Danger Zone</h2>
+          <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 16, lineHeight: 1.5 }}>
+            Permanently deletes this organization, all its campaigns, audience data, and media.
+            Stripe subscription will be cancelled. <strong>This cannot be undone.</strong>
+          </p>
+          {deleteError && <p style={errMsg}>{deleteError}</p>}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <label style={labelStyle}>
+              Type <strong>{org.slug}</strong> to confirm
+              <input
+                style={{ ...inputStyle, borderColor: deleteConfirm === org.slug ? "var(--danger, #ef4444)" : undefined }}
+                type="text"
+                placeholder={org.slug}
+                value={deleteConfirm}
+                onChange={(e) => setDeleteConfirm(e.target.value)}
+              />
+            </label>
+            <div style={actions}>
+              <button
+                style={{ ...saveBtn, background: "var(--danger, #ef4444)", opacity: deleteConfirm !== org.slug || deleteLoading ? 0.5 : 1 }}
+                disabled={deleteConfirm !== org.slug || deleteLoading}
+                onClick={handleDeleteOrg}
+                type="button"
+              >
+                {deleteLoading ? "Deleting…" : "Delete organization"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
