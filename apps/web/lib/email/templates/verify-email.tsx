@@ -10,6 +10,7 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { EmailBrand } from "./_brand";
 
 interface VerifyEmailProps {
   verificationUrl: string;
@@ -20,14 +21,10 @@ export function VerifyEmailTemplate({ verificationUrl, userName }: VerifyEmailPr
   return (
     <Html lang="en">
       <Head />
-      <Preview>Verify your email to activate your Primitive account</Preview>
+      <Preview>Verify your email to activate your Stemflow account</Preview>
       <Body style={body}>
         <Container style={container}>
-          {/* Logo mark */}
-          <Section style={logoSection}>
-            <div style={logoMark} />
-            <Text style={logoText}>Primitive</Text>
-          </Section>
+          <EmailBrand />
 
           <Hr style={divider} />
 
@@ -35,7 +32,7 @@ export function VerifyEmailTemplate({ verificationUrl, userName }: VerifyEmailPr
 
           <Text style={paragraph}>Hi {userName},</Text>
           <Text style={paragraph}>
-            Thanks for creating a Primitive account. Click the button below to verify your email
+            Thanks for creating a Stemflow account. Click the button below to verify your email
             address — the link expires in <strong style={{ color: "#e2e8f0" }}>24 hours</strong>.
           </Text>
 
@@ -52,7 +49,7 @@ export function VerifyEmailTemplate({ verificationUrl, userName }: VerifyEmailPr
 
           <Hr style={divider} />
           <Text style={footer}>
-            If you didn't create a Primitive account, you can safely ignore this email. No account will be created.
+            If you didn't create a Stemflow account, you can safely ignore this email. No account will be created.
           </Text>
         </Container>
       </Body>
@@ -74,33 +71,6 @@ const container: React.CSSProperties = {
   backgroundColor: "#0f0f1a",
   borderRadius: "12px",
   border: "1px solid #1e1e2e",
-};
-
-const logoSection: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "10px",
-  marginBottom: "4px",
-};
-
-const logoMark: React.CSSProperties = {
-  width: "28px",
-  height: "28px",
-  borderRadius: "7px",
-  background: "linear-gradient(135deg, #7c5af3, #a78bfa)",
-  display: "inline-block",
-  verticalAlign: "middle",
-  marginRight: "10px",
-};
-
-const logoText: React.CSSProperties = {
-  color: "#e2e8f0",
-  fontSize: "16px",
-  fontWeight: "700",
-  letterSpacing: "-0.3px",
-  margin: "0",
-  display: "inline-block",
-  verticalAlign: "middle",
 };
 
 const divider: React.CSSProperties = {

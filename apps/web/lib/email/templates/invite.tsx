@@ -10,6 +10,7 @@ import {
   Text,
 } from "@react-email/components";
 import * as React from "react";
+import { EmailBrand } from "./_brand";
 
 interface InviteProps {
   inviteUrl: string;
@@ -24,13 +25,10 @@ export function InviteTemplate({ inviteUrl, orgName, inviterName, role }: Invite
   return (
     <Html lang="en">
       <Head />
-      <Preview>{inviterName} invited you to join {orgName} on Primitive</Preview>
+      <Preview>{inviterName} invited you to join {orgName} on Stemflow</Preview>
       <Body style={body}>
         <Container style={container}>
-          <Section style={logoSection}>
-            <div style={logoMark} />
-            <Text style={logoText}>Primitive</Text>
-          </Section>
+          <EmailBrand />
 
           <Hr style={divider} />
 
@@ -38,7 +36,7 @@ export function InviteTemplate({ inviteUrl, orgName, inviterName, role }: Invite
 
           <Text style={paragraph}>
             <strong style={{ color: "#e2e8f0" }}>{inviterName}</strong> has invited you to join{" "}
-            <strong style={{ color: "#e2e8f0" }}>{orgName}</strong> on Primitive as{" "}
+            <strong style={{ color: "#e2e8f0" }}>{orgName}</strong> on Stemflow as{" "}
             {roleLabel}.
           </Text>
 
@@ -83,32 +81,6 @@ const container: React.CSSProperties = {
   border: "1px solid #1e1e2e",
 };
 
-const logoSection: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  gap: "10px",
-  marginBottom: "4px",
-};
-
-const logoMark: React.CSSProperties = {
-  width: "28px",
-  height: "28px",
-  borderRadius: "7px",
-  background: "linear-gradient(135deg, #7c5af3, #a78bfa)",
-  display: "inline-block",
-  verticalAlign: "middle",
-  marginRight: "10px",
-};
-
-const logoText: React.CSSProperties = {
-  color: "#e2e8f0",
-  fontSize: "16px",
-  fontWeight: "700",
-  letterSpacing: "-0.3px",
-  margin: "0",
-  display: "inline-block",
-  verticalAlign: "middle",
-};
 
 const divider: React.CSSProperties = {
   borderColor: "#1e1e2e",
