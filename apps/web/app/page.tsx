@@ -207,7 +207,7 @@ export default async function RootPage() {
               </article>
 
               {/* flow engine — tall accent */}
-              <article className="lp-card lp-card--tall lp-card--accent lp-rv">
+              <article className="lp-card lp-card-dark lp-card--tall lp-card--accent lp-rv">
                 <div className="lp-ic">{I.flow}</div>
                 <h3>Conditional flow engine</h3>
                 <p>Multi-step flows with branching logic, A/B splits, and action nodes. Route on form data, URL params, audience fields, device, geo, and time.</p>

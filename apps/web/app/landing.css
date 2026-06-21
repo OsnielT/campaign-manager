@@ -217,7 +217,9 @@
 .lp-ic svg { width: 22px; height: 22px; }
 
 .lp-card h3 { font-family: 'Fraunces', serif; font-weight: 500; color: var(--paper); font-size: 22px; letter-spacing: -0.01em; margin: 14px 0 12px; }
+.lp-card-dark h3 { font-family: 'Fraunces', serif; font-weight: 500; color: var(--surface); font-size: 22px; letter-spacing: -0.01em; margin: 14px 0 12px; }
 .lp-card p { font-size: 14.5px; line-height: 1.62; color: var(--text); }
+.lp-card-dark p { font-size: 14.5px; line-height: 1.62; color: var(--raised); }
 
 .lp-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
 .lp-pill { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text); border: 1px solid var(--line-2); border-radius: 999px; padding: 6px 12px; background: var(--raised); }
