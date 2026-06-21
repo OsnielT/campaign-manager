@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -88,7 +88,9 @@ export const metadata: Metadata = {
   applicationName: "Stemflow",
 
   category: "Marketing",
+};
 
+export const viewport: Viewport = {
   themeColor: "#3525CD",
 };
 

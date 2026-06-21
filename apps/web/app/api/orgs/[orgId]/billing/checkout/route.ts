@@ -29,8 +29,17 @@ export async function POST(req: NextRequest, { params }: Params) {
     requireRole(membership, "owner");
 
     const { plan } = (await req.json()) as { plan?: string };
-    if (!plan || !PRICE_IDS[plan]) {
+    if (!plan || !(plan in PRICE_IDS)) {
       return NextResponse.json(errorResponse(badRequest("Invalid plan")), { status: 400 });
+    }
+    if (!PRICE_IDS[plan]) {
+      // Plan is valid but its Stripe Price ID env var is unset — a deploy/config
+      // problem, not a bad request. Surface it distinctly so it's obvious.
+      console.error(`[billing] Missing Stripe price ID for plan "${plan}" (set STRIPE_PRICE_ID_${plan.toUpperCase()}).`);
+      return NextResponse.json(
+        { error: `The ${plan} plan is not configured for billing yet.` },
+        { status: 503 }
+      );
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
