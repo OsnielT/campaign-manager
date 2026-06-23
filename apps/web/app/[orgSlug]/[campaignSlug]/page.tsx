@@ -7,6 +7,8 @@ import { CampaignPageShell } from "@/components/public/CampaignPageShell";
 import { resolveBrand } from "@/lib/campaign-engine/theme";
 import { ExpiryPage } from "@/components/public/ExpiryPage";
 import { headers } from "next/headers";
+import { interpolateTree } from "@/lib/template/interpolate-tree";
+import { buildInterpolationContext } from "@/lib/template/interpolate";
 
 export const dynamic = "force-dynamic";
 
@@ -110,9 +112,12 @@ export default async function CampaignEntryPage({ params, searchParams }: Props)
       : null,
   };
 
+  const interpolationCtx = buildInterpolationContext(session as Parameters<typeof buildInterpolationContext>[0]);
+  const resolvedTree = interpolateTree(treeJson, interpolationCtx);
+
   return (
     <CampaignPageShell
-      data={treeJson as Parameters<typeof CampaignPageShell>[0]["data"]}
+      data={resolvedTree as Parameters<typeof CampaignPageShell>[0]["data"]}
       ctx={ctx}
       urlParams={urlParams}
       theme={resolveBrand(org.branding, campaign.theme)}

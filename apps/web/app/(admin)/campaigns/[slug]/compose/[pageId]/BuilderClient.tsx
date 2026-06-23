@@ -9,6 +9,8 @@ import { extractStyle, applyStyleToTree, type PuckTreeLike, type StyleScope } fr
 import { buildThemeVars, resolveFontFamily, resolveBrand, getHeadingFontGoogleParam, getFontGoogleParam } from "@/lib/campaign-engine/theme";
 import type { CampaignTheme } from "@/lib/campaign-engine/theme";
 import { CampaignThemeContext } from "@/lib/builder/campaign-theme-context";
+import { AudienceFieldsContext, type AudienceField } from "@/lib/builder/audience-fields-context";
+import { VariablesPanel } from "@/components/admin/VariablesPanel";
 import Link from "next/link";
 import { Eye, GripVertical, Loader2, Palette, Wand2 } from "lucide-react";
 import type { PageNavItem } from "./page";
@@ -37,6 +39,7 @@ export function BuilderClient({
   canEdit,
   theme,
   orgBranding,
+  audienceFields = [],
 }: {
   pageId: string;
   campaignName: string;
@@ -47,9 +50,11 @@ export function BuilderClient({
   canEdit: boolean;
   theme: CampaignTheme | null;
   orgBranding: CampaignTheme | null;
+  audienceFields?: AudienceField[];
 }) {
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [previewState, setPreviewState] = useState<PreviewState>("idle");
+  const [previewMode, setPreviewMode] = useState(false);
   // The canvas previews the effective brand (org defaults under campaign
   // overrides). Branding is authored in the campaign Branding tab.
   const effectiveTheme = resolveBrand(orgBranding, theme);
@@ -138,6 +143,7 @@ export function BuilderClient({
       <>
         {children}
         <PropagateStyleControl campaignSlug={campaignSlug} />
+        <VariablesPanel />
       </>
     ),
     // Render each draggable drawer item with its config icon inside the box,
@@ -237,21 +243,23 @@ export function BuilderClient({
         ...(fontFamily ? { fontFamily } : {}),
         ...(effectiveTheme.textColor ? { color: effectiveTheme.textColor } : {}),
       }}>
-        <CampaignThemeContext.Provider value={effectiveTheme}>
-          <Puck
-            config={puckConfig}
-            data={migrateLegacySlots(initialData as Parameters<typeof migrateLegacySlots>[0]) as Data}
-            onChange={handleChange}
-            onPublish={save}
-            overrides={canEdit ? overrides : undefined}
-            permissions={canEdit ? undefined : { drag: false, duplicate: false, delete: false, insert: false, edit: false }}
-            viewports={[
-              { width: 375, label: "Mobile" },
-              { width: 768, label: "Tablet" },
-              { width: 1280, label: "Desktop" },
-            ]}
-          />
-        </CampaignThemeContext.Provider>
+        <AudienceFieldsContext.Provider value={{ fields: audienceFields, previewMode, setPreviewMode }}>
+          <CampaignThemeContext.Provider value={effectiveTheme}>
+            <Puck
+              config={puckConfig}
+              data={migrateLegacySlots(initialData as Parameters<typeof migrateLegacySlots>[0]) as Data}
+              onChange={handleChange}
+              onPublish={save}
+              overrides={canEdit ? overrides : undefined}
+              permissions={canEdit ? undefined : { drag: false, duplicate: false, delete: false, insert: false, edit: false }}
+              viewports={[
+                { width: 375, label: "Mobile" },
+                { width: 768, label: "Tablet" },
+                { width: 1280, label: "Desktop" },
+              ]}
+            />
+          </CampaignThemeContext.Provider>
+        </AudienceFieldsContext.Provider>
       </div>
     </div>
   );

@@ -96,91 +96,104 @@ export default async function RootPage() {
         <header className="lp-hero">
           <div className="lp-hero-grid" aria-hidden />
           <div className="lp-shell">
-            <div className="lp-hero-inner">
-              <div className="lp-rise d1"><span className="lp-badge"><span className="dot" /> One workspace · pages · flows · email · audiences</span></div>
-              <h1 className="lp-h1 lp-rise d2">
-                Campaigns that <span className="ital grad">branch,</span> adapt, and convert
-              </h1>
-              <p className="lp-lede lp-rise d3">
-                Stemflow is one canvas for marketing teams to build campaign pages, route every
-                visitor through conditional flows, send targeted email, and measure exactly what
-                converts — no stitching tools together.
-              </p>
-              <div className="lp-actions lp-rise d4">
-                <Link href="/signup" className="lp-btn lp-btn--grad">Start building {I.arrow}</Link>
-                <a href="#editor" className="lp-btn lp-btn--ghost">See the workspace</a>
+            <div className="lp-hero-split">
+
+              {/* LEFT — identity + copy */}
+              <div className="lp-hero-copy">
+                <div className="lp-rise d1">
+                  <span className="lp-category">Campaign builder for marketing teams</span>
+                </div>
+                <h1 className="lp-h1 lp-rise d2">
+                  Build multi-step campaigns that <span className="ital grad">adapt</span> to every visitor
+                </h1>
+                <p className="lp-lede lp-rise d3">
+                  Stemflow combines drag-and-drop page building, conditional visitor flows,
+                  email broadcasts, and audience targeting — one workspace, no stitching tools together.
+                </p>
+                <div className="lp-actions lp-rise d4">
+                  <Link href="/signup" className="lp-btn lp-btn--grad">Start building free {I.arrow}</Link>
+                  <a href="#editor" className="lp-btn lp-btn--ghost">See the editor</a>
+                </div>
+                <div className="lp-hero-chips lp-rise d5">
+                  <span className="lp-hero-chip">{I.builder} Pages</span>
+                  <span className="lp-hero-chip">{I.flow} Flows</span>
+                  <span className="lp-hero-chip">{I.mail} Email</span>
+                  <span className="lp-hero-chip">{I.target} Audiences</span>
+                </div>
               </div>
-              <div className="lp-trust lp-rise d5">
-                <span><b>Drag-and-drop</b> builder</span>
-                <span><b>A/B</b> split flows</span>
-                <span><b>Signed</b> conversion webhooks</span>
-              </div>
-            </div>
 
-            {/* Animated flow diagram — the actual product */}
-            <div id="flow" className="lp-flow lp-rise d6">
-              <div className="lp-flow-bar">
-                <span className="tl" /><span className="tl" /><span className="tl" />
-                <span className="crumb">flow · <b>Summer Launch 2024</b> — routing by device</span>
-              </div>
-              <div className="lp-flow-stage">
-                <svg className="lp-flow-svg" viewBox="0 0 1000 360" role="img" aria-label="Conditional campaign flow: an entry page branches by device into a mobile offer and a desktop offer, both leading to a converted signup goal.">
-                  <defs>
-                    <linearGradient id="flgrad" x1="0" y1="0" x2="1000" y2="0" gradientUnits="userSpaceOnUse">
-                      <stop offset="0" stopColor="#3525cd" /><stop offset="0.5" stopColor="#6d28d9" /><stop offset="1" stopColor="#4f46e5" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* wires */}
-                  <path id="w1" className="fl-wire" d="M174 180 L250 180" />
-                  <path id="w2" className="fl-wire" d="M400 180 C455 180 455 93 510 93" />
-                  <path id="w3" className="fl-wire" d="M400 180 C455 180 455 267 510 267" />
-                  <path id="w4" className="fl-wire" d="M660 93 C730 93 730 180 800 180" />
-                  <path id="w5" className="fl-wire" d="M660 267 C730 267 730 180 800 180" />
-
-                  {/* traveling pulses */}
-                  {[
-                    { id: "#w1", b: "0s" }, { id: "#w2", b: "0.6s" }, { id: "#w3", b: "1.1s" },
-                    { id: "#w4", b: "1.7s" }, { id: "#w5", b: "2.1s" },
-                  ].map((p) => (
-                    <circle key={p.id} className="fl-pulse" r="3.4">
-                      <animateMotion dur="2.4s" begin={p.b} repeatCount="indefinite" rotate="auto">
-                        <mpath href={p.id} />
-                      </animateMotion>
-                    </circle>
-                  ))}
-
-                  {/* branch labels */}
-                  <text className="fl-tag" x="452" y="120" textAnchor="middle">if mobile</text>
-                  <text className="fl-tag" x="452" y="246" textAnchor="middle">else</text>
-
-                  {/* nodes */}
-                  <g>
-                    <rect className="fl-node fl-node--start" x="24" y="153" width="150" height="54" rx="13" />
-                    <text className="fl-label" x="99" y="178" textAnchor="middle">Entry</text>
-                    <text className="fl-sub" x="99" y="195" textAnchor="middle">/ welcome</text>
-                  </g>
-                  <g>
-                    <rect className="fl-node" x="250" y="153" width="150" height="54" rx="13" />
-                    <text className="fl-label" x="325" y="178" textAnchor="middle">Branch</text>
-                    <text className="fl-sub" x="325" y="195" textAnchor="middle">device · geo · utm</text>
-                  </g>
-                  <g>
-                    <rect className="fl-node" x="510" y="66" width="150" height="54" rx="13" />
-                    <text className="fl-label" x="585" y="91" textAnchor="middle">Mobile offer</text>
-                    <text className="fl-sub" x="585" y="108" textAnchor="middle">/ offer-m</text>
-                  </g>
-                  <g>
-                    <rect className="fl-node" x="510" y="240" width="150" height="54" rx="13" />
-                    <text className="fl-label" x="585" y="265" textAnchor="middle">Desktop offer</text>
-                    <text className="fl-sub" x="585" y="282" textAnchor="middle">/ offer-d</text>
-                  </g>
-                  <g>
-                    <rect className="fl-node fl-node--goal" x="800" y="153" width="172" height="54" rx="13" />
-                    <text className="fl-label" x="886" y="178" textAnchor="middle">Converted ✓</text>
-                    <text className="fl-sub" x="886" y="195" textAnchor="middle">goal · signup</text>
-                  </g>
-                </svg>
+              {/* RIGHT — animated campaign flow diagram */}
+              <div id="flow" className="lp-hero-visual lp-rise d6">
+                <div className="lp-flow-label">
+                  <span className="lp-flow-label-tag">Live campaign flow</span>
+                  <span className="lp-flow-label-desc">Routing visitors by device in real time</span>
+                </div>
+                <div className="lp-flow">
+                  <div className="lp-flow-bar">
+                    <span className="tl" /><span className="tl" /><span className="tl" />
+                    <span className="crumb">flow · <b>Summer Launch 2024</b></span>
+                  </div>
+                  <div className="lp-flow-stage">
+                    <svg className="lp-flow-svg" viewBox="0 0 1000 360" role="img" aria-label="Conditional campaign flow: an entry page branches by device into a mobile offer and a desktop offer, both leading to a converted signup goal.">
+                      <defs>
+                        <linearGradient id="flgrad" x1="0" y1="0" x2="1000" y2="0" gradientUnits="userSpaceOnUse">
+                          <stop offset="0" stopColor="#3525cd" /><stop offset="0.5" stopColor="#6d28d9" /><stop offset="1" stopColor="#4f46e5" />
+                        </linearGradient>
+                      </defs>
+                      <path id="w1" className="fl-wire" d="M174 180 L250 180" />
+                      <path id="w2" className="fl-wire" d="M400 180 C455 180 455 93 510 93" />
+                      <path id="w3" className="fl-wire" d="M400 180 C455 180 455 267 510 267" />
+                      <path id="w4" className="fl-wire" d="M660 93 C730 93 730 180 800 180" />
+                      <path id="w5" className="fl-wire" d="M660 267 C730 267 730 180 800 180" />
+                      {[
+                        { id: "#w1", b: "0s" }, { id: "#w2", b: "0.6s" }, { id: "#w3", b: "1.1s" },
+                        { id: "#w4", b: "1.7s" }, { id: "#w5", b: "2.1s" },
+                      ].map((p) => (
+                        <circle key={p.id} className="fl-pulse" r="3.4">
+                          <animateMotion dur="2.4s" begin={p.b} repeatCount="indefinite" rotate="auto">
+                            <mpath href={p.id} />
+                          </animateMotion>
+                        </circle>
+                      ))}
+                      <text className="fl-tag" x="452" y="120" textAnchor="middle">if mobile</text>
+                      <text className="fl-tag" x="452" y="246" textAnchor="middle">else</text>
+                      <g>
+                        <rect className="fl-node fl-node--start" x="24" y="153" width="150" height="54" rx="13" />
+                        <text className="fl-label" x="99" y="178" textAnchor="middle">Entry page</text>
+                        <text className="fl-sub" x="99" y="195" textAnchor="middle">/ welcome</text>
+                      </g>
+                      <g>
+                        <rect className="fl-node" x="250" y="153" width="150" height="54" rx="13" />
+                        <text className="fl-label" x="325" y="178" textAnchor="middle">Branch</text>
+                        <text className="fl-sub" x="325" y="195" textAnchor="middle">device · geo · utm</text>
+                      </g>
+                      <g>
+                        <rect className="fl-node" x="510" y="66" width="150" height="54" rx="13" />
+                        <text className="fl-label" x="585" y="91" textAnchor="middle">Mobile offer</text>
+                        <text className="fl-sub" x="585" y="108" textAnchor="middle">/ offer-m</text>
+                      </g>
+                      <g>
+                        <rect className="fl-node" x="510" y="240" width="150" height="54" rx="13" />
+                        <text className="fl-label" x="585" y="265" textAnchor="middle">Desktop offer</text>
+                        <text className="fl-sub" x="585" y="282" textAnchor="middle">/ offer-d</text>
+                      </g>
+                      <g>
+                        <rect className="fl-node fl-node--goal" x="800" y="153" width="172" height="54" rx="13" />
+                        <text className="fl-label" x="886" y="178" textAnchor="middle">Converted ✓</text>
+                        <text className="fl-sub" x="886" y="195" textAnchor="middle">goal · signup</text>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+                {/* floating stat chips */}
+                <div className="lp-hero-stat s1">
+                  <span className="lp-stat-n">3.2×</span>
+                  <span className="lp-stat-l">higher conversion with branching</span>
+                </div>
+                <div className="lp-hero-stat s2">
+                  <span className="ck">{I.check}</span>
+                  <span className="lp-stat-l">autosaved · 2s ago</span>
+                </div>
               </div>
             </div>
           </div>

@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import { createHash } from "crypto";
 import { db } from "@/lib/db";
-import { campaignPreviewTokens, campaigns, campaignPages, campaignPageCompositions, organizations } from "@/lib/db/schema";
+import { campaignPreviewTokens, campaigns, campaignPages, campaignPageCompositions, organizations, campaignAudienceFields } from "@/lib/db/schema";
 import { eq, and, isNull, gt } from "drizzle-orm";
 import { CampaignPageShell } from "@/components/public/CampaignPageShell";
 import { resolveBrand, type CampaignTheme } from "@/lib/campaign-engine/theme";
+import { interpolateTree } from "@/lib/template/interpolate-tree";
+import { generateRecordValues } from "@/lib/audience/generate";
 
 export const dynamic = "force-dynamic";
 
@@ -52,13 +54,29 @@ export default async function PreviewPage({ params, searchParams }: Props) {
     where: eq(campaignPageCompositions.campaignPageId, entryPage.id),
   });
 
-  // Get org slug for context
-  const org = await db.query.organizations.findFirst({
-    where: eq(organizations.id, campaign.orgId),
-    columns: { slug: true, name: true, branding: true },
-  });
+  // Get org slug for context, and audience fields for dummy interpolation
+  const [org, audienceFields] = await Promise.all([
+    db.query.organizations.findFirst({
+      where: eq(organizations.id, campaign.orgId),
+      columns: { slug: true, name: true, branding: true },
+    }),
+    db.query.campaignAudienceFields.findMany({
+      where: eq(campaignAudienceFields.campaignId, campaign.id),
+      orderBy: (f, { asc }) => [asc(f.position)],
+    }),
+  ]);
 
-  const treeJson = (composition?.treeJson ?? []) as Parameters<typeof CampaignPageShell>[0]["data"];
+  const treeJson = composition?.treeJson ?? [];
+
+  // Build dummy interpolation context so {{tokens}} render as example values in preview
+  const dummyRecord = generateRecordValues(audienceFields);
+  const dummyCtx = {
+    record: { ...dummyRecord.fields, name: dummyRecord.name, email: dummyRecord.email },
+    form:    { email: dummyRecord.email, company: "Acme Inc." },
+    url:     { ref: "preview", coupon: "WELCOME20" },
+    context: { city: "New York", country: "US", device: "desktop" },
+  };
+  const resolvedTree = interpolateTree(treeJson, dummyCtx);
 
   const ctx = {
     sessionId: null,
@@ -90,7 +108,7 @@ export default async function PreviewPage({ params, searchParams }: Props) {
       {/* Spacer for the banner */}
       <div style={{ height: 40 }} />
       <CampaignPageShell
-        data={treeJson}
+        data={resolvedTree as Parameters<typeof CampaignPageShell>[0]["data"]}
         ctx={ctx}
         urlParams={{}}
         theme={resolveBrand((org?.branding as CampaignTheme | null) ?? null, campaign.theme as CampaignTheme | null)}

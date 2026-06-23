@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { db } from "@/lib/db";
-import { campaignPages, campaigns, campaignPageCompositions, orgMembers, organizations } from "@/lib/db/schema";
+import { campaignPages, campaigns, campaignPageCompositions, orgMembers, organizations, campaignAudienceFields } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { BuilderClient } from "./BuilderClient";
 import type { Data } from "@measured/puck";
@@ -49,7 +49,7 @@ export default async function ComposePage({
   if (page.campaign.slug !== slug) notFound();
   if (!membership) notFound();
 
-  const [allPages, org] = await Promise.all([
+  const [allPages, org, audienceFields] = await Promise.all([
     db.query.campaignPages.findMany({
       where: eq(campaignPages.campaignId, page.campaign.id),
       columns: { id: true, title: true, path: true, isEntry: true, isConversionPage: true, position: true },
@@ -58,6 +58,11 @@ export default async function ComposePage({
     db.query.organizations.findFirst({
       where: eq(organizations.id, orgId),
       columns: { branding: true },
+    }),
+    db.query.campaignAudienceFields.findMany({
+      where: eq(campaignAudienceFields.campaignId, page.campaign.id),
+      columns: { key: true, label: true, generator: true },
+      orderBy: (f, { asc }) => [asc(f.position)],
     }),
   ]);
 
@@ -79,6 +84,7 @@ export default async function ComposePage({
       canEdit={canEdit}
       theme={(page.campaign.theme as CampaignTheme | null) ?? null}
       orgBranding={(org?.branding as CampaignTheme | null) ?? null}
+      audienceFields={audienceFields}
     />
   );
 }

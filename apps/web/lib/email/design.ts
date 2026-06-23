@@ -98,11 +98,52 @@ export function defaultDesign(): EmailDesign {
   };
 }
 
-/** Replace {{name}} / {{field}} merge tags. Missing keys → empty string. */
+/**
+ * Replace merge tags in an email string.
+ * Supports both legacy shorthand {{name}} and full {{record.field|transform|fallback}} syntax.
+ * Missing keys → empty string (or fallback if specified).
+ */
 export function applyMergeTags(input: string, values: Record<string, string>): string {
-  return (input || "").replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_, key: string) => {
-    const v = values[key] ?? values[key.replace(/^record\./, "")];
-    return v == null ? "" : String(v);
+  // Build a minimal InterpolationContext from the flat values map.
+  // All values live under `record` so {{name}} (shorthand) and {{record.name}} both resolve.
+  const ctx = {
+    record: values as Record<string, unknown>,
+    form:   {} as Record<string, unknown>,
+    url:    {} as Record<string, string>,
+    context: {} as Record<string, unknown>,
+  };
+
+  const TRANSFORMS = new Set(["capitalize", "uppercase", "lowercase"]);
+  return (input || "").replace(/\{\{([^}]+)\}\}/g, (_match, inner: string) => {
+    const parts = inner.trim().split("|");
+    const spec = parts[0].trim();
+
+    let field: string;
+    if (spec.includes(".")) {
+      // {{source.field}} — strip the source prefix and look up in the flat values map
+      field = spec.slice(spec.indexOf(".") + 1);
+    } else {
+      field = spec;
+    }
+
+    let fallback: string | undefined;
+    const transforms: string[] = [];
+    for (let i = 1; i < parts.length; i++) {
+      const seg = parts[i].trim();
+      if (TRANSFORMS.has(seg)) transforms.push(seg);
+      else fallback = seg;
+    }
+
+    const raw = ctx.record[field] ?? ctx.record[spec];
+    if (raw == null || raw === "") return fallback ?? "";
+
+    let value = String(raw);
+    for (const t of transforms) {
+      if (t === "capitalize") value = value.charAt(0).toUpperCase() + value.slice(1);
+      else if (t === "uppercase") value = value.toUpperCase();
+      else if (t === "lowercase") value = value.toLowerCase();
+    }
+    return value;
   });
 }
 

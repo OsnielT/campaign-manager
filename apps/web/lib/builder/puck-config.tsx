@@ -32,6 +32,7 @@ import { useCampaignTheme, computeCampaignStyles } from "@/lib/builder/campaign-
 import { sanitizeRichText } from "@/lib/sanitize";
 import { buildThemeVars, resolveFontFamily } from "@/lib/campaign-engine/theme";
 import { campaignBlockConfigs } from "@/lib/builder/campaign-blocks";
+import { renderTemplateTextField } from "@/lib/builder/fields/TemplateTextField";
 import {
   colorField,
   spacingField,
@@ -267,7 +268,7 @@ const TextComponent = {
   icon: <TypeIcon size={16} />,
   fields: {
     _content: sectionField("Content"),
-    content: { type: "textarea" as const, label: "Content" },
+    content: { type: "custom" as const, label: "Content", render: renderTemplateTextField },
     as: {
       type: "select" as const,
       label: "HTML tag",
