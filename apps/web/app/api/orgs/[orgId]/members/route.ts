@@ -4,7 +4,6 @@ import { orgMembers, users } from "@/lib/db/schema";
 import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, notFound } from "@/lib/errors";
 import { eq, and } from "drizzle-orm";
-import { getRequestUser } from "@/lib/auth/session";
 
 async function getMembership(orgId: string, userId: string) {
   return db.query.orgMembers.findFirst({
@@ -17,7 +16,7 @@ export async function GET(
   { params }: { params: Promise<{ orgId: string }> }
 ) {
   const { orgId } = await params;
-  const { userId } = await getRequestUser(req);;
+  const userId = req.headers.get("x-user-id")!;
 
   const membership = await getMembership(orgId, userId);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
@@ -43,7 +42,7 @@ export async function DELETE(
   { params }: { params: Promise<{ orgId: string }> }
 ) {
   const { orgId } = await params;
-  const { userId } = await getRequestUser(req);
+  const userId = req.headers.get("x-user-id")!;
   const { targetUserId } = await req.json();
 
   const membership = await getMembership(orgId, userId);

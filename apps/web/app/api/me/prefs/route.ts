@@ -3,13 +3,13 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { errorResponse, statusFor } from "@/lib/errors";
-import { getRequestUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 // Persist per-user UI prefs. CSRF is enforced by middleware for mutating calls.
 export async function PATCH(req: NextRequest) {
-  const { userId } = await getRequestUser(req);
+  const userId = req.headers.get("x-user-id");
+  if (!userId) return NextResponse.json(errorResponse(new Error("Unauthorized")), { status: 401 });
 
   try {
     const body = await req.json().catch(() => ({}));

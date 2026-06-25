@@ -16,9 +16,8 @@ import type { CampaignTheme } from "@/lib/campaign-engine/theme";
 
 export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
-  clerkId: text("clerk_id").unique(),
   email: text("email").notNull().unique(),
-  passwordHash: text("password_hash"),
+  passwordHash: text("password_hash").notNull(),
   name: text("name").notNull(),
   emailVerifiedAt: timestamp("email_verified_at", { withTimezone: true }),
   // Recorded automatically at signup — proof of consent to Terms / Privacy Policy.
@@ -52,7 +51,6 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
 
 export const organizations = pgTable("organizations", {
   id: uuid("id").defaultRandom().primaryKey(),
-  clerkOrgId: text("clerk_org_id").unique(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   plan: text("plan").notNull().default("free"),

@@ -67,6 +67,9 @@ export async function POST(
       }
     });
 
+    session.orgId = orgId;
+    await session.save();
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[invite-accept]", err);

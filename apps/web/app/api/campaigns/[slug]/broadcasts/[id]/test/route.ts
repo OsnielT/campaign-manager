@@ -10,12 +10,11 @@ import { resolveBrand, type CampaignTheme } from "@/lib/campaign-engine/theme";
 import { renderBroadcastHtml } from "@/lib/email/render-broadcast";
 import { applyMergeTags, applyThemeOverride, mergeValuesFor, type EmailDesign } from "@/lib/email/design";
 import { sendEmail, emailConfigured } from "@/lib/email";
-import { getRequestUser } from "@/lib/auth/session";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string; id: string }> }) {
   const { slug, id } = await params;
-  const { userId, orgId } = await getRequestUser(req);
-  const { membership, campaign, broadcast } = await resolveBroadcast(slug, id, userId, orgId!);
+  const userId = req.headers.get("x-user-id")!;
+  const { membership, campaign, broadcast } = await resolveBroadcast(slug, id, userId, req.headers.get("x-org-id")!);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!broadcast || !campaign) return NextResponse.json(errorResponse(notFound("Broadcast")), { status: 404 });
 

@@ -3,8 +3,7 @@ import { db } from "@/lib/db";
 import { users, organizations, orgMembers, mediaAssets } from "@/lib/db/schema";
 import { errorResponse, statusFor } from "@/lib/errors";
 import { eq, and, count } from "drizzle-orm";
-import { getRequestUser, getClerkIds } from "@/lib/auth/session";
-import { clerkClient } from "@clerk/nextjs/server";
+import { getSession } from "@/lib/auth/session";
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { r2, R2_BUCKET, r2Enabled } from "@/lib/r2";
 import { stripe, stripeEnabled } from "@/lib/stripe/client";
@@ -18,14 +17,8 @@ export const dynamic = "force-dynamic";
  * drops memberships in shared orgs, then deletes the user row and session.
  */
 export async function DELETE(req: NextRequest) {
-  let userId: string;
-  let clerkUserId: string;
-  try {
-    ({ userId } = await getRequestUser(req));
-    ({ clerkUserId } = getClerkIds(req));
-  } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const userId = req.headers.get("x-user-id");
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     // Find all orgs this user belongs to
@@ -87,11 +80,9 @@ export async function DELETE(req: NextRequest) {
     // Delete the user row (cascades tokens, memberships in remaining orgs)
     await db.delete(users).where(eq(users.id, userId));
 
-    // Delete the Clerk account — signs out all sessions automatically
-    const clerk = await clerkClient();
-    await clerk.users.deleteUser(clerkUserId).catch((err) => {
-      console.error("[DELETE /api/me] Clerk user delete failed:", err);
-    });
+    // Destroy session
+    const session = await getSession();
+    session.destroy();
 
     return NextResponse.json({ ok: true });
   } catch (err) {

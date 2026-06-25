@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { campaigns, campaignPages, campaignPageCompositions, orgMembers } from "@/lib/db/schema";
 import { errorResponse, forbidden, notFound } from "@/lib/errors";
 import { eq, and } from "drizzle-orm";
-import { getRequestUser } from "@/lib/auth/session";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -73,8 +72,8 @@ function extractFormFields(tree: unknown, pageTitle: string, pagePath: string, p
 
 export async function GET(req: NextRequest, { params }: Params) {
   const { slug } = await params;
-  const { userId, orgId } = await getRequestUser(req);
-  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
+  const userId = req.headers.get("x-user-id")!;
+  const orgId = req.headers.get("x-org-id")!;
 
   const [membership, campaign] = await Promise.all([
     db.query.orgMembers.findFirst({

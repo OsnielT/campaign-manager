@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { users, organizations, orgMembers } from "@/lib/db/schema";
 import { errorResponse, statusFor } from "@/lib/errors";
 import { eq } from "drizzle-orm";
-import { getRequestUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +12,8 @@ export const dynamic = "force-dynamic";
  * and exportable via /api/campaigns/[slug]/conversions.
  */
 export async function GET(req: NextRequest) {
-  const { userId } = await getRequestUser(req);
+  const userId = req.headers.get("x-user-id");
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const [user, memberships] = await Promise.all([

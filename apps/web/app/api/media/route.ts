@@ -13,11 +13,10 @@ import {
   createPresignedUploadUrl,
 } from "@/lib/r2/upload";
 import { r2Enabled } from "@/lib/r2";
-import { getRequestUser } from "@/lib/auth/session";
 
 export async function POST(req: NextRequest) {
-  const { userId, orgId } = await getRequestUser(req);
-  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
+  const userId = req.headers.get("x-user-id")!;
+  const orgId = req.headers.get("x-org-id")!;
 
   const membership = await db.query.orgMembers.findFirst({
     where: and(eq(orgMembers.orgId, orgId), eq(orgMembers.userId, userId)),
@@ -74,8 +73,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const { userId, orgId } = await getRequestUser(req);
-  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
+  const userId = req.headers.get("x-user-id")!;
+  const orgId = req.headers.get("x-org-id")!;
 
   const membership = await db.query.orgMembers.findFirst({
     where: and(eq(orgMembers.orgId, orgId), eq(orgMembers.userId, userId)),

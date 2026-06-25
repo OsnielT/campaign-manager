@@ -10,14 +10,13 @@ import { errorResponse, statusFor, forbidden, badRequest } from "@/lib/errors";
 import { eq, and } from "drizzle-orm";
 import { renderAsync } from "@react-email/components";
 import React from "react";
-import { getRequestUser } from "@/lib/auth/session";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ orgId: string }> }
 ) {
   const { orgId } = await params;
-  const { userId } = await getRequestUser(req);;
+  const userId = req.headers.get("x-user-id")!;
 
   const membership = await db.query.orgMembers.findFirst({
     where: and(eq(orgMembers.orgId, orgId), eq(orgMembers.userId, userId)),
@@ -88,7 +87,7 @@ export async function DELETE(
   { params }: { params: Promise<{ orgId: string }> }
 ) {
   const { orgId } = await params;
-  const { userId } = await getRequestUser(req);;
+  const userId = req.headers.get("x-user-id")!;
   const { inviteId } = await req.json();
 
   const membership = await db.query.orgMembers.findFirst({

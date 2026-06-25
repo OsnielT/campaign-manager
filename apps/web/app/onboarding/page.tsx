@@ -3,7 +3,6 @@
 import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useClerk, useAuth } from "@clerk/nextjs";
 import StemflowLogo from "@/components/branding/StemflowLogo";
 
 type Step = "org" | "plan" | "campaign" | "ready";
@@ -55,12 +54,18 @@ function slugify(name: string) {
     .slice(0, 48);
 }
 
+function getCsrf() {
+  return (
+    document.cookie
+      .split("; ")
+      .find((c) => c.startsWith("primitive_csrf="))
+      ?.split("=")[1] ?? ""
+  );
+}
+
 export default function OnboardingPage() {
   const router = useRouter();
-  const { setActive } = useClerk();
-  const { orgId: clerkOrgId, isLoaded: authLoaded } = useAuth();
   const [step, setStep] = useState<Step>("org");
-  const [syncing, setSyncing] = useState(true);
 
   // Org step
   const [orgName, setOrgName] = useState("");
@@ -83,23 +88,6 @@ export default function OnboardingPage() {
   const [campaignLoading, setCampaignLoading] = useState(false);
   const [createdSlug, setCreatedSlug] = useState("");
 
-  // On mount: if the user already has an active Clerk org (created during sign-up),
-  // sync it to our DB and skip straight to the plan step.
-  useEffect(() => {
-    if (!authLoaded) return;
-    if (!clerkOrgId) { setSyncing(false); return; }
-
-    fetch("/api/orgs/sync", { method: "POST" })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data?.org?.id) {
-          setOrgId(data.org.id);
-          setStep("plan");
-        }
-      })
-      .finally(() => setSyncing(false));
-  }, [authLoaded, clerkOrgId]);
-
   useEffect(() => {
     if (!orgSlugEdited) setOrgSlug(slugify(orgName));
   }, [orgName, orgSlugEdited]);
@@ -115,7 +103,7 @@ export default function OnboardingPage() {
     try {
       const res = await fetch("/api/orgs", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf() },
         body: JSON.stringify({ name: orgName, slug: orgSlug }),
       });
       const data = await res.json();
@@ -123,8 +111,6 @@ export default function OnboardingPage() {
         setOrgError(data.error ?? "Failed to create organization");
         return;
       }
-      // Activate the new Clerk org in the current session
-      await setActive({ organization: data.clerkOrgId });
       setOrgId(data.org.id);
       setStep("plan");
     } finally {
@@ -144,7 +130,7 @@ export default function OnboardingPage() {
     try {
       const res = await fetch(`/api/orgs/${orgId}/billing/checkout`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf() },
         body: JSON.stringify({ plan }),
       });
       const data = await res.json();
@@ -165,7 +151,7 @@ export default function OnboardingPage() {
     try {
       const res = await fetch("/api/campaigns", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf() },
         body: JSON.stringify({ name: campaignName, slug: campaignSlug }),
       });
       const data = await res.json();
@@ -191,14 +177,6 @@ export default function OnboardingPage() {
     { id: "ready", label: "Ready" },
   ];
   const stepIndex = STEP_LABELS.findIndex((s) => s.id === step);
-
-  if (syncing) {
-    return (
-      <div style={shell}>
-        <div style={{ color: "var(--text-muted)", fontSize: 14 }}>Setting up your workspace…</div>
-      </div>
-    );
-  }
 
   return (
     <div style={shell}>

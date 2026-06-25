@@ -4,7 +4,6 @@ import { campaignPageCompositions, campaignPages, campaigns, orgMembers } from "
 import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, notFound } from "@/lib/errors";
 import { eq, and } from "drizzle-orm";
-import { getRequestUser } from "@/lib/auth/session";
 
 async function resolvePageAccess(pageId: string, userId: string) {
   const page = await db.query.campaignPages.findFirst({
@@ -27,7 +26,7 @@ export async function GET(
   { params }: { params: Promise<{ pageId: string }> }
 ) {
   const { pageId } = await params;
-  const { userId } = await getRequestUser(req);;
+  const userId = req.headers.get("x-user-id")!;
 
   const { page, membership } = await resolvePageAccess(pageId, userId);
   if (!page) return NextResponse.json(errorResponse(notFound("Page")), { status: 404 });
@@ -50,7 +49,7 @@ export async function PUT(
   { params }: { params: Promise<{ pageId: string }> }
 ) {
   const { pageId } = await params;
-  const { userId } = await getRequestUser(req);;
+  const userId = req.headers.get("x-user-id")!;
 
   const { page, membership } = await resolvePageAccess(pageId, userId);
   if (!page) return NextResponse.json(errorResponse(notFound("Page")), { status: 404 });

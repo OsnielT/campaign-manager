@@ -4,7 +4,6 @@ import { getSession } from "@/lib/auth/session";
 import type { Metadata } from "next";
 import "./landing.css";
 import StemflowLogo from "@/components/branding/StemflowLogo";
-import { NavAuth } from "@/components/landing/NavAuth";
 
 export const metadata: Metadata = {
   title: "Stemflow — Multi-step campaign builder",
@@ -82,11 +81,11 @@ export default async function RootPage() {
               <a className="lp-nav-link" href="#flow">/ flow</a>
               <a className="lp-nav-link" href="#features">/ features</a>
               <a className="lp-nav-link" href="#editor">/ editor</a>
-              <a className="lp-nav-link" href="#pricing">/ pricing</a>
             </div>
           </div>
           <div className="lp-nav-right">
-            <NavAuth />
+            <Link href="/login" className="lp-signin">Sign in</Link>
+            <Link href="/signup" className="lp-btn lp-btn--sm">Get started {I.arrow}</Link>
           </div>
         </div>
       </nav>
@@ -366,102 +365,6 @@ export default async function RootPage() {
           </div>
         </section>
 
-        {/* ── Pricing ───────────────────────────────────────────────────── */}
-        <section id="pricing" className="lp-section" style={{ paddingTop: 0 }}>
-          <div className="lp-shell">
-            <div className="lp-head center lp-rv">
-              <span className="lp-eyebrow">Pricing</span>
-              <h2 className="lp-h2">Simple pricing, <span className="ital grad">no surprises</span></h2>
-              <p className="lp-sub">Start free. Scale when you need to. No per-seat fees, no hidden limits on pages or flows.</p>
-            </div>
-
-            <div className="lp-pricing lp-rv">
-
-              {/* Starter */}
-              <div className="lp-plan">
-                <div className="lp-plan-head">
-                  <span className="lp-plan-name">Starter</span>
-                  <div className="lp-plan-price">
-                    <span className="lp-plan-amt">$0</span>
-                    <span className="lp-plan-per">forever free</span>
-                  </div>
-                  <p className="lp-plan-desc">Everything you need to launch your first campaign and see what Stemflow can do.</p>
-                  <Link href="/signup" className="lp-btn lp-btn--ghost lp-plan-cta">Get started free {I.arrow}</Link>
-                </div>
-                <ul className="lp-plan-feats">
-                  {[
-                    "1 active campaign",
-                    "Up to 5 pages per campaign",
-                    "Drag-and-drop page builder",
-                    "Conditional flow engine",
-                    "500 audience records",
-                    "Public campaign URL",
-                    "Community support",
-                  ].map(f => <li key={f}><span className="lp-feat-ck">{I.check}</span>{f}</li>)}
-                  <li className="lp-feat-dim"><span className="lp-feat-x">—</span>Email broadcasts</li>
-                  <li className="lp-feat-dim"><span className="lp-feat-x">—</span>A/B split flows</li>
-                  <li className="lp-feat-dim"><span className="lp-feat-x">—</span>Custom domain</li>
-                </ul>
-              </div>
-
-              {/* Pro — featured */}
-              <div className="lp-plan lp-plan--pro">
-                <div className="lp-plan-badge">Most popular</div>
-                <div className="lp-plan-head">
-                  <span className="lp-plan-name">Pro</span>
-                  <div className="lp-plan-price">
-                    <span className="lp-plan-amt">$29</span>
-                    <span className="lp-plan-per">/ month</span>
-                  </div>
-                  <p className="lp-plan-desc">The full Stemflow experience for marketing teams running serious campaigns.</p>
-                  <Link href="/signup" className="lp-btn lp-btn--grad lp-plan-cta">Start Pro free {I.arrow}</Link>
-                </div>
-                <ul className="lp-plan-feats">
-                  {[
-                    "Unlimited campaigns",
-                    "Unlimited pages per campaign",
-                    "All block types + templates",
-                    "A/B split flows",
-                    "10,000 audience records",
-                    "Email broadcasts (10k sends/mo)",
-                    "Conversion webhooks",
-                    "Custom domain",
-                    "Priority email support",
-                  ].map(f => <li key={f}><span className="lp-feat-ck">{I.check}</span>{f}</li>)}
-                </ul>
-              </div>
-
-              {/* Team */}
-              <div className="lp-plan">
-                <div className="lp-plan-head">
-                  <span className="lp-plan-name">Enterprise</span>
-                  <div className="lp-plan-price">
-                    <span className="lp-plan-amt">Quote</span>
-                  </div>
-                  <p className="lp-plan-desc">High-volume sending, signed exports, and audit trails for larger marketing teams.</p>
-                  <Link href="/signup" className="lp-btn lp-btn--ghost lp-plan-cta">Start Team free {I.arrow}</Link>
-                </div>
-                <ul className="lp-plan-feats">
-                  <li className="lp-feat-inherit"><span className="lp-feat-ck">{I.check}</span>Everything in Pro</li>
-                  {[
-                    "100,000 audience records",
-                    "100k email sends / month",
-                    "HMAC-signed webhook payloads",
-                    "Audit log",
-                    "Up to 10 team members",
-                    "Dedicated onboarding call",
-                  ].map(f => <li key={f}><span className="lp-feat-ck">{I.check}</span>{f}</li>)}
-                </ul>
-              </div>
-
-            </div>
-
-            <p className="lp-pricing-note lp-rv">
-              All plans include a 14-day free trial of Pro features. No credit card required to start.
-            </p>
-          </div>
-        </section>
-
         {/* ── Final CTA ─────────────────────────────────────────────────── */}
         <section className="lp-section" style={{ paddingTop: 0 }}>
           <div className="lp-shell">
@@ -498,7 +401,7 @@ export default async function RootPage() {
                 <h3>Account</h3>
                 <Link href="/signup">Create account</Link>
                 <Link href="/login">Sign in</Link>
-                <Link href="/login">Reset password</Link>
+                <Link href="/forgot-password">Forgot password</Link>
               </div>
               <div className="lp-foot-col">
                 <h3>Legal</h3>

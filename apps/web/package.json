@@ -15,7 +15,6 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.797.0",
     "@aws-sdk/s3-request-presigner": "^3.797.0",
-    "@clerk/nextjs": "^7.5.8",
     "@dagrejs/dagre": "^3.0.0",
     "@faker-js/faker": "^10.5.0",
     "@measured/puck": "^0.20.2",
@@ -44,8 +43,7 @@
     "react-simple-code-editor": "^0.14.1",
     "recharts": "^3.8.1",
     "resend": "^4.5.1",
-    "stripe": "^17.7.0",
-    "svix": "^1.96.0"
+    "stripe": "^17.7.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

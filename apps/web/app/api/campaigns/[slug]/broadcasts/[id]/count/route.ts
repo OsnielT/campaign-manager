@@ -3,12 +3,10 @@ import { errorResponse, statusFor, forbidden, notFound } from "@/lib/errors";
 import { resolveBroadcast } from "@/lib/email/broadcast-access";
 import { countForSegment } from "@/lib/email/broadcast";
 import type { RuleGroup } from "@/lib/campaign-engine/branch";
-import { getRequestUser } from "@/lib/auth/session";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string; id: string }> }) {
   const { slug, id } = await params;
-  const { userId, orgId } = await getRequestUser(req);
-  const { membership, campaign, broadcast } = await resolveBroadcast(slug, id, userId, orgId!);
+  const { membership, campaign, broadcast } = await resolveBroadcast(slug, id, req.headers.get("x-user-id")!, req.headers.get("x-org-id")!);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!broadcast || !campaign) return NextResponse.json(errorResponse(notFound("Broadcast")), { status: 404 });
 

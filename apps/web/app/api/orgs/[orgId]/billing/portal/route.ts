@@ -5,13 +5,12 @@ import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, notFound, badRequest } from "@/lib/errors";
 import { eq, and } from "drizzle-orm";
 import { stripe, stripeEnabled } from "@/lib/stripe/client";
-import { getRequestUser } from "@/lib/auth/session";
 
 type Params = { params: Promise<{ orgId: string }> };
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { orgId } = await params;
-  const { userId } = await getRequestUser(req);;
+  const userId = req.headers.get("x-user-id")!;
 
   const [membership, org] = await Promise.all([
     db.query.orgMembers.findFirst({
