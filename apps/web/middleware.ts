@@ -1,81 +1,46 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getSessionFromRequest } from "@/lib/auth/session";
-import { generateCsrfToken, setCsrfCookie, validateCsrfToken } from "@/lib/auth/csrf";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-const PROTECTED_API_PATTERN = /^\/api\//;
-const COMPOSE_PATTERN = /^\/campaigns\/[^/]+\/compose\//;
-const PUBLIC_API_PREFIXES = [
-  "/api/auth/",
-  "/api/public/",
-  "/api/webhooks/",
-  "/api/cron/",
-];
-const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const isPublicApi = createRouteMatcher([
+  "/api/public/(.*)",
+  "/api/webhooks/(.*)",
+  "/api/cron/(.*)",
+]);
 
-const CSRF_COOKIE = "primitive_csrf";
+const isProtectedApi = createRouteMatcher(["/api/(.*)"]);
+const isComposeRoute = createRouteMatcher(["/campaigns/:slug/compose/:path*"]);
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+export default clerkMiddleware(async (auth, req) => {
+  // Public APIs and webhooks: no auth
+  if (isPublicApi(req)) return NextResponse.next();
 
-  // Determine if this route requires auth. NOTE: admin *pages* (/dashboard,
-  // /campaigns, …) are not handled here — the (admin) route-group layout
-  // enforces auth server-side via getSession(). This middleware covers
-  // protected APIs and the Puck compose route.
-  const isProtectedApi =
-    PROTECTED_API_PATTERN.test(pathname) &&
-    !PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p));
-  const isComposeRoute = COMPOSE_PATTERN.test(pathname);
+  if (isProtectedApi(req) || isComposeRoute(req)) {
+    const { userId, orgId } = await auth();
 
-  if (!isProtectedApi && !isComposeRoute) {
-    // Public routes (incl. /api/auth/*) still seed the CSRF cookie when missing,
-    // so the first mutating request right after login/signup has a valid token.
-    const res = NextResponse.next();
-    if (!req.cookies.get(CSRF_COOKIE)?.value) {
-      setCsrfCookie(res, generateCsrfToken());
+    if (!userId) {
+      if (isComposeRoute(req)) {
+        const loginUrl = new URL("/login", req.url);
+        loginUrl.searchParams.set("next", req.nextUrl.pathname);
+        return NextResponse.redirect(loginUrl);
+      }
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    return res;
+
+    // Forward Clerk identity to route handlers via headers
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set("x-clerk-user-id", userId);
+    requestHeaders.set("x-clerk-org-id", orgId ?? "");
+
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
-  const res = NextResponse.next();
-
-  // Read session
-  const session = await getSessionFromRequest(req, res);
-
-  if (!session.userId) {
-    if (isComposeRoute) {
-      // Page route — send the visitor to login rather than a JSON 401.
-      const loginUrl = new URL("/login", req.url);
-      loginUrl.searchParams.set("next", pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // CSRF validation for mutating API calls
-  if (isProtectedApi && MUTATING_METHODS.has(req.method)) {
-    if (!validateCsrfToken(req)) {
-      return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
-    }
-  }
-
-  // Forward identity to route handlers via headers
-  const requestHeaders = new Headers(req.headers);
-  requestHeaders.set("x-user-id", session.userId);
-  requestHeaders.set("x-org-id", session.orgId ?? "");
-
-  const nextRes = NextResponse.next({ request: { headers: requestHeaders } });
-
-  // Re-issue CSRF cookie if missing (session persists across browser restarts but session cookies don't)
-  if (!req.cookies.get(CSRF_COOKIE)?.value) {
-    setCsrfCookie(nextRes, generateCsrfToken());
-  }
-
-  return nextRes;
-}
+  return NextResponse.next();
+});
 
 export const config = {
   matcher: [
-    "/api/:path*",
-    "/campaigns/:slug/compose/:path*",
+    // Run on all routes except Next.js internals and static files
+    "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?)$).*)",
+    "/__clerk/:path*",
   ],
 };

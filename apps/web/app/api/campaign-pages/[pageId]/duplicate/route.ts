@@ -9,13 +9,13 @@ import {
 import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, notFound } from "@/lib/errors";
 import { eq, and, count } from "drizzle-orm";
+import { getRequestUser } from "@/lib/auth/session";
 
 type Params = { params: Promise<{ pageId: string }> };
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { pageId } = await params;
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
 
   const source = await db.query.campaignPages.findFirst({
     where: eq(campaignPages.id, pageId),

@@ -22,6 +22,13 @@
       "when": 1782072225765,
       "tag": "0002_handy_jean_grey",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1782261619766,
+      "tag": "0003_magenta_lorna_dane",
+      "breakpoints": true
     }
   ]
 }

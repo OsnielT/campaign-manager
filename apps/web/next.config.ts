@@ -22,40 +22,45 @@ function csp(scriptSrc: string) {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://rsms.me",
       "font-src 'self' https://fonts.gstatic.com https://rsms.me",
       scriptSrc,
-      "frame-src https://js.stripe.com https://hooks.stripe.com",
+      "frame-src https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com",
       `img-src 'self' data: blob: https: ${R2_IMG}`,
-      "connect-src 'self' https://api.stripe.com",
+      "connect-src 'self' https://api.stripe.com https://*.clerk.accounts.dev wss://*.clerk.accounts.dev https://va.vercel-scripts.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
+      "worker-src blob:",
     ].join("; "),
   };
 }
 
+// Clerk's browser JS is loaded from the app's own FAPI subdomain (*.clerk.accounts.dev in dev,
+// custom domain in prod). The publishable key encodes the subdomain.
+const CLERK_SCRIPT = "https://*.clerk.accounts.dev https://challenges.cloudflare.com https://va.vercel-scripts.com";
+
 // Public campaign pages — allow inline scripts for Next.js hydration
 const publicHeaders = [
   ...BASE_HEADERS,
-  csp(`script-src 'self' 'unsafe-inline'${DEV_EVAL}`),
+  csp(`script-src 'self' 'unsafe-inline' ${CLERK_SCRIPT}${DEV_EVAL}`),
 ];
 
-// Authenticated admin pages — allow Stripe.js, no framing
+// Authenticated admin pages — allow Stripe.js and Clerk, no framing
 const adminHeaders = [
   ...BASE_HEADERS,
   { key: "X-Frame-Options", value: "DENY" },
-  csp(`script-src 'self' 'unsafe-inline' https://js.stripe.com${DEV_EVAL}`),
+  csp(`script-src 'self' 'unsafe-inline' https://js.stripe.com ${CLERK_SCRIPT}${DEV_EVAL}`),
 ];
 
 // Preview pages — same as public
 const previewHeaders = [
   ...BASE_HEADERS,
-  csp(`script-src 'self' 'unsafe-inline'${DEV_EVAL}`),
+  csp(`script-src 'self' 'unsafe-inline' ${CLERK_SCRIPT}${DEV_EVAL}`),
 ];
 
 // Puck page editor — needs unsafe-eval for builder runtime
 const editorHeaders = [
   ...BASE_HEADERS,
   { key: "X-Frame-Options", value: "DENY" },
-  csp("script-src 'self' 'unsafe-inline' 'unsafe-eval'"),
+  csp(`script-src 'self' 'unsafe-inline' 'unsafe-eval' ${CLERK_SCRIPT}`),
 ];
 
 const nextConfig: NextConfig = {
@@ -77,8 +82,11 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   async headers() {
     return [
-      // Landing page
+      // Landing page, auth pages, onboarding
       { source: "/", headers: publicHeaders },
+      { source: "/login", headers: publicHeaders },
+      { source: "/signup", headers: publicHeaders },
+      { source: "/onboarding", headers: publicHeaders },
 
       // Public campaign pages (matched first, may be overridden below)
       { source: "/:orgSlug/:campaignSlug/:path*", headers: publicHeaders },

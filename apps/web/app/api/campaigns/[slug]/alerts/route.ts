@@ -4,6 +4,7 @@ import { campaigns, campaignAlerts, orgMembers } from "@/lib/db/schema";
 import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, notFound, badRequest } from "@/lib/errors";
 import { eq, and } from "drizzle-orm";
+import { getRequestUser } from "@/lib/auth/session";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -22,8 +23,8 @@ async function resolve(orgId: string, userId: string, slug: string) {
 
 export async function GET(req: NextRequest, { params }: Params) {
   const { slug } = await params;
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
+  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
   const { membership, campaign } = await resolve(orgId, userId, slug);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!campaign) return NextResponse.json(errorResponse(notFound("Campaign")), { status: 404 });
@@ -41,8 +42,8 @@ export async function GET(req: NextRequest, { params }: Params) {
 
 export async function PUT(req: NextRequest, { params }: Params) {
   const { slug } = await params;
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
+  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
   const { membership, campaign } = await resolve(orgId, userId, slug);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!campaign) return NextResponse.json(errorResponse(notFound("Campaign")), { status: 404 });

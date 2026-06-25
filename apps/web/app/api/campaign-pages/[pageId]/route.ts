@@ -4,6 +4,7 @@ import { campaignPages, campaignFlowNodes, campaigns, orgMembers } from "@/lib/d
 import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, notFound } from "@/lib/errors";
 import { eq, and } from "drizzle-orm";
+import { getRequestUser } from "@/lib/auth/session";
 
 type Params = { params: Promise<{ pageId: string }> };
 
@@ -22,8 +23,8 @@ async function resolvePage(pageId: string, orgId: string, userId: string) {
 
 export async function PUT(req: NextRequest, { params }: Params) {
   const { pageId } = await params;
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
+  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
 
   const { page, membership } = await resolvePage(pageId, orgId, userId);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
@@ -57,8 +58,8 @@ export async function PUT(req: NextRequest, { params }: Params) {
 
 export async function DELETE(req: NextRequest, { params }: Params) {
   const { pageId } = await params;
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
+  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
 
   const { page, membership } = await resolvePage(pageId, orgId, userId);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });

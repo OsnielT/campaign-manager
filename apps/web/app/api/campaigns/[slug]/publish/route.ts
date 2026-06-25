@@ -6,14 +6,15 @@ import { errorResponse, statusFor, forbidden, notFound, badRequest } from "@/lib
 import { eq, and } from "drizzle-orm";
 import { validateFlow, type SimNode, type SimEdge } from "@/lib/campaign-engine/simulate";
 import type { RuleGroup } from "@/lib/campaign-engine/branch";
+import { getRequestUser } from "@/lib/auth/session";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
+  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
 
   const [membership, campaign] = await Promise.all([
     db.query.orgMembers.findFirst({

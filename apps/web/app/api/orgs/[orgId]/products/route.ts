@@ -4,12 +4,13 @@ import { orgProducts, orgMembers } from "@/lib/db/schema";
 import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, badRequest } from "@/lib/errors";
 import { eq, and, desc } from "drizzle-orm";
+import { getRequestUser } from "@/lib/auth/session";
 
 type Params = { params: Promise<{ orgId: string }> };
 
 export async function GET(req: NextRequest, { params }: Params) {
   const { orgId } = await params;
-  const userId = req.headers.get("x-user-id")!;
+  const { userId } = await getRequestUser(req);;
 
   const membership = await db.query.orgMembers.findFirst({
     where: and(eq(orgMembers.orgId, orgId), eq(orgMembers.userId, userId)),
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest, { params }: Params) {
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { orgId } = await params;
-  const userId = req.headers.get("x-user-id")!;
+  const { userId } = await getRequestUser(req);;
 
   const membership = await db.query.orgMembers.findFirst({
     where: and(eq(orgMembers.orgId, orgId), eq(orgMembers.userId, userId)),
