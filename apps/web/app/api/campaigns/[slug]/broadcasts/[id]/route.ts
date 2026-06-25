@@ -5,10 +5,12 @@ import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, notFound } from "@/lib/errors";
 import { eq } from "drizzle-orm";
 import { resolveBroadcast } from "@/lib/email/broadcast-access";
+import { getRequestUser } from "@/lib/auth/session";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string; id: string }> }) {
   const { slug, id } = await params;
-  const { membership, broadcast } = await resolveBroadcast(slug, id, req.headers.get("x-user-id")!, req.headers.get("x-org-id")!);
+  const { userId, orgId } = await getRequestUser(req);
+  const { membership, broadcast } = await resolveBroadcast(slug, id, userId, orgId!);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!broadcast) return NextResponse.json(errorResponse(notFound("Broadcast")), { status: 404 });
   return NextResponse.json({ broadcast });
@@ -16,7 +18,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string; id: string }> }) {
   const { slug, id } = await params;
-  const { membership, broadcast } = await resolveBroadcast(slug, id, req.headers.get("x-user-id")!, req.headers.get("x-org-id")!);
+  const { userId, orgId } = await getRequestUser(req);
+  const { membership, broadcast } = await resolveBroadcast(slug, id, userId, orgId!);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!broadcast) return NextResponse.json(errorResponse(notFound("Broadcast")), { status: 404 });
 
@@ -43,7 +46,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
 
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ slug: string; id: string }> }) {
   const { slug, id } = await params;
-  const { membership, broadcast } = await resolveBroadcast(slug, id, req.headers.get("x-user-id")!, req.headers.get("x-org-id")!);
+  const { userId, orgId } = await getRequestUser(req);
+  const { membership, broadcast } = await resolveBroadcast(slug, id, userId, orgId!);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!broadcast) return NextResponse.json(errorResponse(notFound("Broadcast")), { status: 404 });
   try {

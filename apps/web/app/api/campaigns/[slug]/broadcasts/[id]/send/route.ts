@@ -6,10 +6,12 @@ import { errorResponse, statusFor, forbidden, notFound, badRequest } from "@/lib
 import { eq } from "drizzle-orm";
 import { resolveBroadcast } from "@/lib/email/broadcast-access";
 import { sendBroadcast } from "@/lib/email/broadcast";
+import { getRequestUser } from "@/lib/auth/session";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string; id: string }> }) {
   const { slug, id } = await params;
-  const { membership, broadcast } = await resolveBroadcast(slug, id, req.headers.get("x-user-id")!, req.headers.get("x-org-id")!);
+  const { userId, orgId } = await getRequestUser(req);
+  const { membership, broadcast } = await resolveBroadcast(slug, id, userId, orgId!);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!broadcast) return NextResponse.json(errorResponse(notFound("Broadcast")), { status: 404 });
 

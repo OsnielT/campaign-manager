@@ -9,6 +9,7 @@ import { instantiateCampaign } from "@/lib/campaign-engine/instantiate";
 import { defaultTreeFor } from "@/lib/builder/default-content";
 import { emailSeedFor } from "@/lib/email/seed-templates";
 import { audienceFieldsFor } from "@/lib/audience/seed-fields";
+import { getRequestUser } from "@/lib/auth/session";
 
 function slugify(name: string): string {
   return name
@@ -27,8 +28,8 @@ async function getMembership(orgId: string, userId: string) {
 }
 
 export async function GET(req: NextRequest) {
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
+  if (!orgId) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
 
   const membership = await getMembership(orgId, userId);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
@@ -43,8 +44,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
+  if (!orgId) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
 
   const membership = await getMembership(orgId, userId);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });

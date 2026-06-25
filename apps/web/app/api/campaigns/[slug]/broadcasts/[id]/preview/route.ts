@@ -7,13 +7,15 @@ import { resolveBroadcast } from "@/lib/email/broadcast-access";
 import { resolveBrand, type CampaignTheme } from "@/lib/campaign-engine/theme";
 import { renderBroadcastHtml } from "@/lib/email/render-broadcast";
 import { applyMergeTags, applyThemeOverride, type EmailDesign } from "@/lib/email/design";
+import { getRequestUser } from "@/lib/auth/session";
 
 // Sample values so {{merge}} tags show real-looking text in the preview.
 const SAMPLE: Record<string, string> = { name: "Alex", email: "alex@example.com" };
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string; id: string }> }) {
   const { slug, id } = await params;
-  const { membership, campaign, broadcast } = await resolveBroadcast(slug, id, req.headers.get("x-user-id")!, req.headers.get("x-org-id")!);
+  const { userId, orgId } = await getRequestUser(req);
+  const { membership, campaign, broadcast } = await resolveBroadcast(slug, id, userId, orgId!);
   if (!membership) return NextResponse.json(errorResponse(forbidden()), { status: 403 });
   if (!broadcast || !campaign) return NextResponse.json(errorResponse(notFound("Broadcast")), { status: 404 });
 

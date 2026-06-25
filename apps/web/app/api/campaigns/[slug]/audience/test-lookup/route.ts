@@ -5,13 +5,14 @@ import { requireRole } from "@/lib/auth/rbac";
 import { errorResponse, statusFor, forbidden, notFound, badRequest } from "@/lib/errors";
 import { eq, and } from "drizzle-orm";
 import { createHash } from "crypto";
+import { getRequestUser } from "@/lib/auth/session";
 
 type Params = { params: Promise<{ slug: string }> };
 
 export async function POST(req: NextRequest, { params }: Params) {
   const { slug } = await params;
-  const userId = req.headers.get("x-user-id")!;
-  const orgId = req.headers.get("x-org-id")!;
+  const { userId, orgId } = await getRequestUser(req);
+  if (!orgId) return NextResponse.json({ error: "No active organization" }, { status: 403 });
 
   const [membership, campaign] = await Promise.all([
     db.query.orgMembers.findFirst({

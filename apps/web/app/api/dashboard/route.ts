@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDashboardMetrics, isRange } from "@/lib/dashboard/metrics";
 import { errorResponse, statusFor } from "@/lib/errors";
+import { getRequestUser } from "@/lib/auth/session";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const orgId = req.headers.get("x-org-id");
+  const { orgId } = await getRequestUser(req);
   if (!orgId) return NextResponse.json(errorResponse(new Error("No organization")), { status: 401 });
 
   try {

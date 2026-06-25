@@ -15,6 +15,7 @@ import {
   LogOut,
 } from "lucide-react";
 import StemflowLogo from "@/components/branding/StemflowLogo";
+import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
@@ -36,9 +37,12 @@ export function SidebarNav({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { signOut } = useClerk();
 
-  function handleLogout() {
-    if (window.confirm("Log out of Stemflow?")) router.push("/logout");
+  async function handleLogout() {
+    if (window.confirm("Log out of Stemflow?")) {
+      await signOut({ redirectUrl: "/login" });
+    }
   }
 
   return (

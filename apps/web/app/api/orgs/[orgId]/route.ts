@@ -7,13 +7,14 @@ import { eq, and } from "drizzle-orm";
 import { DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { r2, R2_BUCKET, r2Enabled } from "@/lib/r2";
 import { stripe, stripeEnabled } from "@/lib/stripe/client";
+import { getRequestUser } from "@/lib/auth/session";
 
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ orgId: string }> }
 ) {
   const { orgId } = await params;
-  const userId = req.headers.get("x-user-id")!;
+  const { userId } = await getRequestUser(req);
 
   const membership = await db.query.orgMembers.findFirst({
     where: and(eq(orgMembers.orgId, orgId), eq(orgMembers.userId, userId)),
@@ -62,7 +63,7 @@ export async function DELETE(
   { params }: { params: Promise<{ orgId: string }> }
 ) {
   const { orgId } = await params;
-  const userId = req.headers.get("x-user-id")!;
+  const { userId } = await getRequestUser(req);
 
   const membership = await db.query.orgMembers.findFirst({
     where: and(eq(orgMembers.orgId, orgId), eq(orgMembers.userId, userId)),
