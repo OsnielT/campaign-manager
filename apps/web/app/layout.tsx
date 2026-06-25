@@ -100,6 +100,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en">
         <body suppressHydrationWarning>
+          <div style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 9999,
+            background: "#1a1a2e",
+            borderBottom: "1px solid #f59e0b33",
+            padding: "8px 16px",
+            textAlign: "center",
+            fontSize: "12px",
+            fontFamily: "inherit",
+            color: "#fbbf24",
+            letterSpacing: "0.02em",
+          }}>
+            🚧 This is an early preview — not intended for production use. Data may be reset without notice.
+          </div>
           {children}
           <Analytics />
         </body>
