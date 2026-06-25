@@ -47,7 +47,7 @@ type ClerkEvent =
         role: string;
       };
     }
-  | { type: string; data: unknown };
+  | { type: Exclude<string, "user.created" | "user.updated" | "organization.created" | "organizationMembership.created">; data: unknown };
 
 async function verify(req: NextRequest): Promise<ClerkEvent> {
   const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
