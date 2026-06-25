@@ -17,3 +17,9 @@ dist/
 .claude/
 CLAUDE.md
 **/CLAUDE.md
+
+# Clerk generated files
+.clerk/
+**/.clerk/
+.agents/
+**/.agents/
